@@ -41,14 +41,19 @@ print 							{ printf("PRINT\n");
 								  return MENOS; }
 =	 							{ printf("IGUAL\n");
 								  return IGUAL; }
+
 "//"{C}*\n						{ printf("COMMENT\n"); }
 [ \n\t\r]						{ }
 \"([^"\n]+|\\\"[^"\n]*\\\")*\"	{ printf("Cadena: %s\n", yytext);
-											return CADENA; }
-"/*"						{ BEGIN(comentario); inicio_comentario = yylineno;}
-<comentario>.|\n { }
-<comentario><<EOF>> { printf("Comentario no cerrado en la línea %d\n", inicio_comentario); return 0;}
-<comentario>"*/" { BEGIN(0); }
+								  return CADENA; }
+
+"/*"							{ BEGIN(comentario);
+								  inicio_comentario = yylineno; }
+<comentario>.|\n 				{ }
+<comentario><<EOF>> 			{ printf("Comentario no cerrado en la línea %d\n", inicio_comentario);
+ 								  return 0; }
+<comentario>"*/" 				{ BEGIN(0); }
 
 [^a-zA-Z0-9(),+\-= \n\t\r"/]+	{ printf("Error léxico en %d: %s\n", yylineno, yytext); }
+
 %%

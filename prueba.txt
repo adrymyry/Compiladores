@@ -1,7 +1,7 @@
 // Programa de prueba
 main() {
   /* Comentario
-    multilinea 
+    multilinea
   x = #$\;
   x = 5;
   y = x+5;
