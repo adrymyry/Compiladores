@@ -9,3 +9,6 @@ clean:
 
 run: prueba prueba.txt
 		./prueba prueba.txt
+
+MAC: lex.yy.c main.c
+	gcc lex.yy.c main.c -ll -o prueba

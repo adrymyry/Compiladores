@@ -20,7 +20,7 @@ int main(int argc, char const *argv[]) {
 
     yyin = f_in;
     int token;
-    while (token = yylex()) {
+    while ((token = yylex())) {
         printf("Token: %d\n", token);
     }
 
