@@ -1,8 +1,6 @@
 // Programa de prueba
 main() {
-  /* Comentario
-    multilinea
-  x = #$\;
+  2x = #$\;
   x = 5;
   y = x+5;
   print("Hola \"amigo\",x,y);
