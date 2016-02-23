@@ -44,6 +44,7 @@ print 							{ printf("PRINT\n");
 
 "//"{C}*\n						{ printf("COMMENT\n"); }
 [ \n\t\r]						{ }
+ /* \!([^"\n]+|\\\")*\" */
 \"([^"\n]+|\\\"[^"\n]*\\\")*\"	{ printf("Cadena: %s\n", yytext);
 								  return CADENA; }
 
