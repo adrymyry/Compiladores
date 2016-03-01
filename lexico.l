@@ -29,7 +29,7 @@ si 								{ printf("SI\n");
 								  return SI; }
 entonces 						{ printf("ENTONCES\n");
 							  	  return ENTONCES; }
-sino 							{ printf("SINO\n");
+si-no 							{ printf("SINO\n");
 								  return SINO; }
 mientras 						{ printf("MIENTRAS\n");
 								  return MIENTRAS; }
@@ -40,27 +40,26 @@ imprimir 						{ printf("IMPRIMIR\n");
 leer 							{ printf("LEER\n");
 								  return LEER; }
 
-({L}|_)({L}|_|{D})*				{ if (strlen(yytext)>16) {
-								  	printf("Error léxico en %d: Identificador %s no válido\n", yylineno, yytext);
-							  	  } else {
-									printf("Id: %s\n", yytext);
-    								return ID;
-								  }
+({L}|_)({L}|_|{D}){0,15}		{ printf("Id: %s\n", yytext);
+    						  	  return ID;
 								}
+({L}|_)({L}|_|{D}){16,}			{ printf("Error léxico en línea %d: Identificador %s no válido.\n", yylineno, yytext); }
 
-{D}+							{ unsigned long long max = 2147483648LL;
-								  printf("%llu\n", max);
+{D}+							{ long long max = (long long)1<<31;
 								  if (atoll(yytext) > max) {
-									printf("Error léxico en %d: Entero %s no válido\n", yylineno, yytext);
+									printf("Error léxico en línea %d: Entero %s no válido.\n", yylineno, yytext);
 								  } else {
 									printf("Num: %s\n", yytext);
 									return NUM;
 								  }
 							   	}
 
- /* \!([^"\n]+|\\\")*\" */
-\"([^"\n]+|\\\"[^"\n]*\\\")*\"	{ printf("Cadena: %s\n", yytext);
+
+\"([^"\n]+|\\\")*\"				{ printf("Cadena: %s\n", yytext);
 								  return CADENA; }
+\"([^"\n]+|\\\")*				{ printf("Error léxico en línea %d, cadena no cerrada: %s\n", yylineno, yytext);
+								}
+
 ;	 							{ printf("PYC\n");
 								  return PYC; }
 :	 							{ printf("DOSP\n");
@@ -85,7 +84,7 @@ leer 							{ printf("LEER\n");
 								  return ASSIGN; }
 
 
-"//"{C}*\n						{ printf("COMMENT\n"); }
+"//"{C}*\n						{ }
 [ \n\t\r]						{ }
 
 
@@ -96,6 +95,6 @@ leer 							{ printf("LEER\n");
  								  return 0; }
 <comentario>"*)" 				{ BEGIN(0); }
 
-[^a-zA-Z0-9(),+\-= \n\t\r"/]+	{ printf("Error léxico en %d: %s\n", yylineno, yytext); }
+[^a-zA-ZñÑáéíóúüÁÉÍÓÚÜ0-9(),+\-= \n\t\r"/]+	{ printf("Error léxico en %d: %s\n", yylineno, yytext); }
 
 %%
