@@ -33,6 +33,8 @@ C .
 								  return POR; }
 "/"	 							{ printf("DIV\n");
 								  return DIV; }
+= 						  		{ return IGUAL; }
+[a-z]+		  					{ return ID; }
 [ \t\r\n]+						{ }
 .	{ printf("Error léxico en %d: %s\n", yylineno, yytext); }
 

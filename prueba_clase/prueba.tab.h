@@ -52,7 +52,9 @@ extern int yydebug;
     PARI = 262,
     PARD = 263,
     NUM = 264,
-    PYC = 265
+    PYC = 265,
+    ID = 266,
+    IGUAL = 267
   };
 #endif
 

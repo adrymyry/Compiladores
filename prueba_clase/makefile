@@ -11,7 +11,7 @@ clean:
 	rm -f prueba lex.yy.c prueba.tab.*
 
 run: prueba prueba.txt
-	./prueba prueba.txt
+	./prueba < prueba.txt
 
 MAC: lex.yy.c prueba.tab.c
 	gcc lex.yy.c prueba.tab.c -ll -o prueba
