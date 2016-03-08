@@ -1,7 +1,1 @@
-// Programa de prueba
-main() {
-  2x = #$\;
-  x = 5;
-  y = x+5;
-  print("Hola \"amigo\",x,y);
-}
+5+4; 7*2-(6+2)
