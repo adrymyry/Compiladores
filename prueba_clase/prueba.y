@@ -2,6 +2,7 @@
     #include <stdio.h>
     void yyerror(char const *msg);
     extern int yylineno;
+    extern int yylex();
     int contador = 0;
 %}
 

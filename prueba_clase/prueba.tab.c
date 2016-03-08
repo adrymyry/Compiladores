@@ -67,9 +67,10 @@
     #include <stdio.h>
     void yyerror(char const *msg);
     extern int yylineno;
+    extern int yylex();
     int contador = 0;
 
-#line 73 "prueba.tab.c" /* yacc.c:339  */
+#line 74 "prueba.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -131,7 +132,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 135 "prueba.tab.c" /* yacc.c:358  */
+#line 136 "prueba.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -429,8 +430,8 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    12,    12,    12,    14,    14,    18,    21,    24,    29,
-      32,    35,    40,    43,    46
+       0,    13,    13,    13,    15,    15,    19,    22,    25,    30,
+      33,    36,    41,    44,    47
 };
 #endif
 
@@ -1209,103 +1210,103 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 12 "prueba.y" /* yacc.c:1661  */
+#line 13 "prueba.y" /* yacc.c:1661  */
     { contador++; }
-#line 1215 "prueba.tab.c" /* yacc.c:1661  */
+#line 1216 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 3:
-#line 13 "prueba.y" /* yacc.c:1661  */
+#line 14 "prueba.y" /* yacc.c:1661  */
     { printf("entrada->entrada;e [%d=%d]\n", contador, (yyvsp[0])); }
-#line 1221 "prueba.tab.c" /* yacc.c:1661  */
+#line 1222 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 4:
-#line 14 "prueba.y" /* yacc.c:1661  */
+#line 15 "prueba.y" /* yacc.c:1661  */
     { contador++; }
-#line 1227 "prueba.tab.c" /* yacc.c:1661  */
+#line 1228 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 5:
-#line 15 "prueba.y" /* yacc.c:1661  */
+#line 16 "prueba.y" /* yacc.c:1661  */
     { printf("entrada->e [%d=%d]\n", contador,(yyvsp[0]));}
-#line 1233 "prueba.tab.c" /* yacc.c:1661  */
+#line 1234 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 6:
-#line 18 "prueba.y" /* yacc.c:1661  */
+#line 19 "prueba.y" /* yacc.c:1661  */
     { printf("e->e+t\n");
                           (yyval) = (yyvsp[-2])+(yyvsp[0]);
                         }
-#line 1241 "prueba.tab.c" /* yacc.c:1661  */
+#line 1242 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 7:
-#line 21 "prueba.y" /* yacc.c:1661  */
+#line 22 "prueba.y" /* yacc.c:1661  */
     { printf("e->e-t\n");
                           (yyval) = (yyvsp[-2])-(yyvsp[0]);
                         }
-#line 1249 "prueba.tab.c" /* yacc.c:1661  */
+#line 1250 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 8:
-#line 24 "prueba.y" /* yacc.c:1661  */
+#line 25 "prueba.y" /* yacc.c:1661  */
     { printf("e->t|n\n");
                           (yyval) = (yyvsp[0]);
                         }
-#line 1257 "prueba.tab.c" /* yacc.c:1661  */
+#line 1258 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 9:
-#line 29 "prueba.y" /* yacc.c:1661  */
+#line 30 "prueba.y" /* yacc.c:1661  */
     { printf("t->t*f\n");
                           (yyval) = (yyvsp[-2])*(yyvsp[0]);
                         }
-#line 1265 "prueba.tab.c" /* yacc.c:1661  */
+#line 1266 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 10:
-#line 32 "prueba.y" /* yacc.c:1661  */
+#line 33 "prueba.y" /* yacc.c:1661  */
     { printf("t->t/f\n");
                           (yyval) = (yyvsp[-2])/(yyvsp[0]);
                         }
-#line 1273 "prueba.tab.c" /* yacc.c:1661  */
+#line 1274 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 11:
-#line 35 "prueba.y" /* yacc.c:1661  */
+#line 36 "prueba.y" /* yacc.c:1661  */
     { printf("t->f\n");
                           (yyval) = (yyvsp[0]);
                         }
-#line 1281 "prueba.tab.c" /* yacc.c:1661  */
+#line 1282 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 12:
-#line 40 "prueba.y" /* yacc.c:1661  */
+#line 41 "prueba.y" /* yacc.c:1661  */
     { printf("f->(e)\n");
                           (yyval) = (yyvsp[-1]);
                         }
-#line 1289 "prueba.tab.c" /* yacc.c:1661  */
+#line 1290 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 13:
-#line 43 "prueba.y" /* yacc.c:1661  */
+#line 44 "prueba.y" /* yacc.c:1661  */
     { printf("f->-f\n");
                           (yyval) = -(yyvsp[0]);
                         }
-#line 1297 "prueba.tab.c" /* yacc.c:1661  */
+#line 1298 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
   case 14:
-#line 46 "prueba.y" /* yacc.c:1661  */
+#line 47 "prueba.y" /* yacc.c:1661  */
     { printf("f->NUM [=%d]\n", (yyvsp[0]));
                           (yyval) = (yyvsp[0]);
                         }
-#line 1305 "prueba.tab.c" /* yacc.c:1661  */
+#line 1306 "prueba.tab.c" /* yacc.c:1661  */
     break;
 
 
-#line 1309 "prueba.tab.c" /* yacc.c:1661  */
+#line 1310 "prueba.tab.c" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1533,7 +1534,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 51 "prueba.y" /* yacc.c:1906  */
+#line 52 "prueba.y" /* yacc.c:1906  */
 
 
 /* Tratamiento de errores */
