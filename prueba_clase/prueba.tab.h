@@ -51,16 +51,27 @@ extern int yydebug;
     DIV = 261,
     PARI = 262,
     PARD = 263,
-    NUM = 264,
-    PYC = 265,
-    ID = 266,
-    IGUAL = 267
+    PYC = 264,
+    IGUAL = 265,
+    NUM = 266,
+    ID = 267
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 12 "prueba.y" /* yacc.c:1915  */
+
+    int entero;
+    char *cadena;
+
+#line 72 "prueba.tab.h" /* yacc.c:1915  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

@@ -768,79 +768,72 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 19 "lexico.l"
-{ printf("Num: %s\n", yytext);
-								  yylval= atoi(yytext);
+{ yylval.entero = atoi(yytext);
 								  return NUM; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 22 "lexico.l"
-{ printf("PARI\n");
-								  return PARI; }
+#line 21 "lexico.l"
+{ return PARI; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 24 "lexico.l"
-{ printf("PARD\n");
-								  return PARD; }
+#line 22 "lexico.l"
+{ return PARD; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 26 "lexico.l"
-{ printf("PYC\n");
-								  return PYC; }
+#line 23 "lexico.l"
+{ return PYC; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 28 "lexico.l"
-{ printf("MAS\n");
-								  return MAS; }
+#line 24 "lexico.l"
+{ return MAS; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 30 "lexico.l"
-{ printf("MENOS\n");
-								  return MENOS; }
+#line 25 "lexico.l"
+{ return MENOS; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 32 "lexico.l"
-{ printf("POR\n");
-								  return POR; }
+#line 26 "lexico.l"
+{ return POR; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 34 "lexico.l"
-{ printf("DIV\n");
-								  return DIV; }
+#line 27 "lexico.l"
+{ return DIV; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 36 "lexico.l"
+#line 28 "lexico.l"
 { return IGUAL; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 37 "lexico.l"
-{ return ID; }
+#line 29 "lexico.l"
+{ yylval.cadena = strdup(yytext);
+								  return ID; }
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 38 "lexico.l"
+#line 31 "lexico.l"
 { }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 39 "lexico.l"
+#line 32 "lexico.l"
 { printf("Error léxico en %d: %s\n", yylineno, yytext); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 41 "lexico.l"
+#line 34 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 844 "lex.yy.c"
+#line 837 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(comentario):
 	yyterminate();
@@ -1850,7 +1843,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 41 "lexico.l"
+#line 34 "lexico.l"
 
 
 

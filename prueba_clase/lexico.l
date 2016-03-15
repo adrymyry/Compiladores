@@ -16,26 +16,19 @@ C .
 
 %%
 
-{D}+							{ printf("Num: %s\n", yytext);
-								  yylval= atoi(yytext);
+{D}+							{ yylval.entero = atoi(yytext);
 								  return NUM; }
-"("	 							{ printf("PARI\n");
-								  return PARI; }
-")"	 							{ printf("PARD\n");
-								  return PARD; }
-;	 							{ printf("PYC\n");
-								  return PYC; }
-"+"	 							{ printf("MAS\n");
-								  return MAS; }
--	 							{ printf("MENOS\n");
-								  return MENOS; }
-"*"	 							{ printf("POR\n");
-								  return POR; }
-"/"	 							{ printf("DIV\n");
-								  return DIV; }
+"("	 							{ return PARI; }
+")"	 							{ return PARD; }
+;	 							{ return PYC; }
+"+"	 							{ return MAS; }
+-	 							{ return MENOS; }
+"*"	 							{ return POR; }
+"/"	 							{ return DIV; }
 = 						  		{ return IGUAL; }
-[a-z]+		  					{ return ID; }
+[a-z]+		  					{ yylval.cadena = strdup(yytext);
+								  return ID; }
 [ \t\r\n]+						{ }
-.	{ printf("Error léxico en %d: %s\n", yylineno, yytext); }
+.								{ printf("Error léxico en %d: %s\n", yylineno, yytext); }
 
 %%

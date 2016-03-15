@@ -1,5 +1,5 @@
-prueba: lex.yy.c prueba.tab.c
-	gcc lex.yy.c prueba.tab.c -lfl -o prueba
+prueba: lex.yy.c prueba.tab.c listaVar.c listaVar.h
+	gcc lex.yy.c prueba.tab.c listaVar.c -lfl -o prueba
 
 lex.yy.c: lexico.l prueba.tab.h
 	flex --yylineno lexico.l
@@ -13,5 +13,5 @@ clean:
 run: prueba prueba.txt
 	./prueba < prueba.txt
 
-MAC: lex.yy.c prueba.tab.c
-	gcc lex.yy.c prueba.tab.c -ll -o prueba
+MAC: lex.yy.c prueba.tab.c listaVar.c listaVar.h
+	gcc lex.yy.c prueba.tab.c listaVar.c -ll -o prueba
