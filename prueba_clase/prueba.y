@@ -20,50 +20,49 @@
 %token <entero> NUM
 %token <cadena> ID
 /* No terminales asociados a tipos de datos */
-%type <entero> e t f asig
+%type <entero> e asig
+
+/* Prioridades de terminales de menos a mas */
+/* Y asociatividad izquierda */
+%left MAS MENOS
+%left POR DIV
+%left UMENOS
+
 
 %%
 /* Reglas de produccion */
-entrada : entrada PYC { contador++; } asig  { printf("entrada->entrada;asig [%d=%d]\n", contador, $4); }
+entrada : entrada { contador++; } asig  { printf("entrada->entrada;asig [%d=%d]\n", contador, $3); }
         | { contador++; } asig              { printf("entrada->asig [%d=%d]\n", contador,$2);}
+        | error PYC                         { printf("Error durante análisis de entrada\n"); }
         ;
 
-asig    : ID IGUAL e                        { printf("%s=e\n", $1); $$ = $3;
+asig    : ID IGUAL e   PYC                  { printf("%s=e\n", $1); $$ = $3;
                                               variables = crearVar(variables, $1, $3);
                                             }
 
-e       : e MAS t                           { printf("e->e+t\n");
+e       : e MAS e                           { printf("e->e+e\n");
                                               $$ = $1+$3;
                                             }
-        | e MENOS t                         { printf("e->e-t\n");
+        | e MENOS e                         { printf("e->e-e\n");
                                               $$ = $1-$3;
                                             }
-        | t                                 { printf("e->t\n");
-                                              $$ = $1;
-                                            }
-        ;
 
-t       : t POR f                           { printf("t->t*f\n");
+        | e POR e                           { printf("e->e*e\n");
                                               $$ = $1*$3;
                                             }
-        | t DIV f                           { printf("t->t/f\n");
+        | e DIV e                           { printf("e->e/e\n");
                                               $$ = $1/$3;
                                             }
-        | f                                 { printf("t->f\n");
-                                              $$ = $1;
-                                            }
-        ;
-
-f       : PARI e PARD                       { printf("f->(e)\n");
+        | PARI e PARD                       { printf("e->(e)\n");
                                               $$ = $2;
                                             }
-        | MENOS f                           { printf("f->-f\n");
+        | MENOS e                           { printf("e->-e\n");
                                               $$ = -$2;
                                             }
-        | NUM                               { printf("f->NUM [=%d]\n", $1);
+        | NUM                               { printf("e->NUM [=%d]\n", $1);
                                               $$ = $1;
                                             }
-        | ID                                { printf("f->%s\n", $1);
+        | ID                                { printf("e->%s\n", $1);
                                               $$ = recuperaVar(variables, $1);
                                               free($1);
                                             }
@@ -77,6 +76,7 @@ void yyerror(char const *msg) {
 }
 
 int main(void) {
+    yydebug=0; //Para que no salga el debug
     yyparse();
     borrar(variables);
     return 0;

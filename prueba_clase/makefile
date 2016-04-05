@@ -5,7 +5,7 @@ lex.yy.c: lexico.l prueba.tab.h
 	flex --yylineno lexico.l
 
 prueba.tab.c prueba.tab.h: prueba.y
-	bison -d prueba.y
+	bison -d -v -t prueba.y
 
 clean:
 	rm -f prueba lex.yy.c prueba.tab.*

@@ -1,0 +1,352 @@
+Terminales no usados en gramática
+
+   UMENOS
+
+
+Gramática
+
+    0 $accept: entrada $end
+
+    1 $@1: %empty
+
+    2 entrada: entrada $@1 asig
+
+    3 $@2: %empty
+
+    4 entrada: $@2 asig
+    5        | error PYC
+
+    6 asig: ID IGUAL e PYC
+
+    7 e: e MAS e
+    8  | e MENOS e
+    9  | e POR e
+   10  | e DIV e
+   11  | PARI e PARD
+   12  | MENOS e
+   13  | NUM
+   14  | ID
+
+
+Terminales con las reglas donde aparecen
+
+$end (0) 0
+error (256) 5
+MAS (258) 7
+MENOS (259) 8 12
+POR (260) 9
+DIV (261) 10
+PARI (262) 11
+PARD (263) 11
+PYC (264) 5 6
+IGUAL (265) 6
+NUM (266) 13
+ID (267) 6 14
+UMENOS (268)
+
+
+No terminales con las reglas donde aparecen
+
+$accept (14)
+    en la izquierda: 0
+entrada (15)
+    en la izquierda: 2 4 5, en la derecha: 0 2
+$@1 (16)
+    en la izquierda: 1, en la derecha: 2
+$@2 (17)
+    en la izquierda: 3, en la derecha: 4
+asig (18)
+    en la izquierda: 6, en la derecha: 2 4
+e (19)
+    en la izquierda: 7 8 9 10 11 12 13 14, en la derecha: 6 7 8 9 10
+    11 12
+
+
+State 0
+
+    0 $accept: . entrada $end
+
+    error  desplazar e ir al estado 1
+
+    ID  reduce usando la regla 3 ($@2)
+
+    entrada  ir al estado 2
+    $@2      ir al estado 3
+
+
+State 1
+
+    5 entrada: error . PYC
+
+    PYC  desplazar e ir al estado 4
+
+
+State 2
+
+    0 $accept: entrada . $end
+    2 entrada: entrada . $@1 asig
+
+    $end  desplazar e ir al estado 5
+
+    $default  reduce usando la regla 1 ($@1)
+
+    $@1  ir al estado 6
+
+
+State 3
+
+    4 entrada: $@2 . asig
+
+    ID  desplazar e ir al estado 7
+
+    asig  ir al estado 8
+
+
+State 4
+
+    5 entrada: error PYC .
+
+    $default  reduce usando la regla 5 (entrada)
+
+
+State 5
+
+    0 $accept: entrada $end .
+
+    $default  aceptar
+
+
+State 6
+
+    2 entrada: entrada $@1 . asig
+
+    ID  desplazar e ir al estado 7
+
+    asig  ir al estado 9
+
+
+State 7
+
+    6 asig: ID . IGUAL e PYC
+
+    IGUAL  desplazar e ir al estado 10
+
+
+State 8
+
+    4 entrada: $@2 asig .
+
+    $default  reduce usando la regla 4 (entrada)
+
+
+State 9
+
+    2 entrada: entrada $@1 asig .
+
+    $default  reduce usando la regla 2 (entrada)
+
+
+State 10
+
+    6 asig: ID IGUAL . e PYC
+
+    MENOS  desplazar e ir al estado 11
+    PARI   desplazar e ir al estado 12
+    NUM    desplazar e ir al estado 13
+    ID     desplazar e ir al estado 14
+
+    e  ir al estado 15
+
+
+State 11
+
+   12 e: MENOS . e
+
+    MENOS  desplazar e ir al estado 11
+    PARI   desplazar e ir al estado 12
+    NUM    desplazar e ir al estado 13
+    ID     desplazar e ir al estado 14
+
+    e  ir al estado 16
+
+
+State 12
+
+   11 e: PARI . e PARD
+
+    MENOS  desplazar e ir al estado 11
+    PARI   desplazar e ir al estado 12
+    NUM    desplazar e ir al estado 13
+    ID     desplazar e ir al estado 14
+
+    e  ir al estado 17
+
+
+State 13
+
+   13 e: NUM .
+
+    $default  reduce usando la regla 13 (e)
+
+
+State 14
+
+   14 e: ID .
+
+    $default  reduce usando la regla 14 (e)
+
+
+State 15
+
+    6 asig: ID IGUAL e . PYC
+    7 e: e . MAS e
+    8  | e . MENOS e
+    9  | e . POR e
+   10  | e . DIV e
+
+    MAS    desplazar e ir al estado 18
+    MENOS  desplazar e ir al estado 19
+    POR    desplazar e ir al estado 20
+    DIV    desplazar e ir al estado 21
+    PYC    desplazar e ir al estado 22
+
+
+State 16
+
+    7 e: e . MAS e
+    8  | e . MENOS e
+    9  | e . POR e
+   10  | e . DIV e
+   12  | MENOS e .
+
+    POR  desplazar e ir al estado 20
+    DIV  desplazar e ir al estado 21
+
+    $default  reduce usando la regla 12 (e)
+
+
+State 17
+
+    7 e: e . MAS e
+    8  | e . MENOS e
+    9  | e . POR e
+   10  | e . DIV e
+   11  | PARI e . PARD
+
+    MAS    desplazar e ir al estado 18
+    MENOS  desplazar e ir al estado 19
+    POR    desplazar e ir al estado 20
+    DIV    desplazar e ir al estado 21
+    PARD   desplazar e ir al estado 23
+
+
+State 18
+
+    7 e: e MAS . e
+
+    MENOS  desplazar e ir al estado 11
+    PARI   desplazar e ir al estado 12
+    NUM    desplazar e ir al estado 13
+    ID     desplazar e ir al estado 14
+
+    e  ir al estado 24
+
+
+State 19
+
+    8 e: e MENOS . e
+
+    MENOS  desplazar e ir al estado 11
+    PARI   desplazar e ir al estado 12
+    NUM    desplazar e ir al estado 13
+    ID     desplazar e ir al estado 14
+
+    e  ir al estado 25
+
+
+State 20
+
+    9 e: e POR . e
+
+    MENOS  desplazar e ir al estado 11
+    PARI   desplazar e ir al estado 12
+    NUM    desplazar e ir al estado 13
+    ID     desplazar e ir al estado 14
+
+    e  ir al estado 26
+
+
+State 21
+
+   10 e: e DIV . e
+
+    MENOS  desplazar e ir al estado 11
+    PARI   desplazar e ir al estado 12
+    NUM    desplazar e ir al estado 13
+    ID     desplazar e ir al estado 14
+
+    e  ir al estado 27
+
+
+State 22
+
+    6 asig: ID IGUAL e PYC .
+
+    $default  reduce usando la regla 6 (asig)
+
+
+State 23
+
+   11 e: PARI e PARD .
+
+    $default  reduce usando la regla 11 (e)
+
+
+State 24
+
+    7 e: e . MAS e
+    7  | e MAS e .
+    8  | e . MENOS e
+    9  | e . POR e
+   10  | e . DIV e
+
+    POR  desplazar e ir al estado 20
+    DIV  desplazar e ir al estado 21
+
+    $default  reduce usando la regla 7 (e)
+
+
+State 25
+
+    7 e: e . MAS e
+    8  | e . MENOS e
+    8  | e MENOS e .
+    9  | e . POR e
+   10  | e . DIV e
+
+    POR  desplazar e ir al estado 20
+    DIV  desplazar e ir al estado 21
+
+    $default  reduce usando la regla 8 (e)
+
+
+State 26
+
+    7 e: e . MAS e
+    8  | e . MENOS e
+    9  | e . POR e
+    9  | e POR e .
+   10  | e . DIV e
+
+    $default  reduce usando la regla 9 (e)
+
+
+State 27
+
+    7 e: e . MAS e
+    8  | e . MENOS e
+    9  | e . POR e
+   10  | e . DIV e
+   10  | e DIV e .
+
+    $default  reduce usando la regla 10 (e)
