@@ -95,6 +95,6 @@ leer 							{ printf("LEER\n");
  								  return 0; }
 <comentario>"*)" 				{ BEGIN(0); }
 
-[^a-zA-ZñÑáéíóúüÁÉÍÓÚÜ0-9(),+\-= \n\t\r"/]+	{ printf("Error léxico en %d: %s\n", yylineno, yytext); }
+[^a-zA-ZñÑáéíóúüÁÉÍÓÚÜ0-9(),+\-_*.; \n\t\r"/]+	{ printf("Error léxico en %d: %s\n", yylineno, yytext); }
 
 %%
