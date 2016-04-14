@@ -36,7 +36,8 @@ entrada : entrada { contador++; } asig  { printf("entrada->entrada;asig [%d=%d]\
         | error PYC                         { printf("Error durante análisis de entrada\n"); }
         ;
 
-asig    : ID IGUAL e   PYC                  { printf("%s=e\n", $1); $$ = $3;
+asig    : ID IGUAL e   PYC                  { printf("%s=e\n", $1);
+                                              $$ = $3;
                                               variables = crearVar(variables, $1, $3);
                                             }
 

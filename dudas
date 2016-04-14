@@ -1,0 +1,9 @@
+prueba.y-linea29
+    %left UMENOS
+    que es el UMENOS? menos unario (negativo)?
+
+sintactico.output-estado 58, desplazamiento/reduccion (aviso)
+    en el estado 58 indica:  "SINO  desplazar e ir al estado 66"
+    mirando el estado 66 interpretamos que hace lo correcto.
+    si el simbolo de la entrada no es SI_NO, reduce usando la regla 15.
+    15          | SI expression ENTONCES statement

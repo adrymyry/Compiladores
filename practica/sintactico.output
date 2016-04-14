@@ -1,0 +1,795 @@
+Estado 58 conflictos: 1 desplazamiento(s)/reducción(ones)
+
+
+Gramática
+
+    0 $accept: program $end
+
+    1 program: PROGRAMA ID PARI PARD PYC declarations compound_statement PUNTO
+
+    2 declarations: declarations VAR identifier_list DOSP type PYC
+    3             | %empty
+
+    4 identifier_list: ID
+    5                | identifier_list COMA ID
+
+    6 type: ENTERO
+
+    7 compound_statement: COMIENZO optional_statements FIN
+
+    8 optional_statements: statement_list
+    9                    | %empty
+
+   10 statement_list: statement
+   11               | statement_list PYC statement
+
+   12 statement: ID ASSIGN expression
+   13          | compound_statement
+   14          | SI expression ENTONCES statement SINO statement
+   15          | SI expression ENTONCES statement
+   16          | MIENTRAS expression HACER statement
+   17          | IMPRIMIR print_list
+   18          | LEER read_list
+
+   19 print_list: print_item
+   20           | print_list COMA print_item
+
+   21 print_item: expression
+   22           | CADENA
+
+   23 read_list: ID
+   24          | read_list COMA ID
+
+   25 expression: expression MAS expression
+   26           | expression MENOS expression
+   27           | expression MULT expression
+   28           | expression DIV expression
+   29           | MENOS expression
+   30           | PARI expression PARD
+   31           | ID
+   32           | NUM
+
+
+Terminales con las reglas donde aparecen
+
+$end (0) 0
+error (256)
+PROGRAMA (258) 1
+VAR (259) 2
+ENTERO (260) 6
+COMIENZO (261) 7
+FIN (262) 7
+SI (263) 14 15
+ENTONCES (264) 14 15
+SINO (265) 14
+MIENTRAS (266) 16
+HACER (267) 16
+IMPRIMIR (268) 17
+LEER (269) 18
+PYC (270) 1 2 11
+DOSP (271) 2
+PUNTO (272) 1
+COMA (273) 5 20 24
+MAS (274) 25
+MENOS (275) 26 29
+MULT (276) 27
+PARI (277) 1 30
+PARD (278) 1 30
+DIV (279) 28
+ASSIGN (280) 12
+NUM (281) 32
+ID (282) 1 4 5 12 23 24 31
+CADENA (283) 22
+UMENOS (284)
+
+
+No terminales con las reglas donde aparecen
+
+$accept (30)
+    en la izquierda: 0
+program (31)
+    en la izquierda: 1, en la derecha: 0
+declarations (32)
+    en la izquierda: 2 3, en la derecha: 1 2
+identifier_list (33)
+    en la izquierda: 4 5, en la derecha: 2 5
+type (34)
+    en la izquierda: 6, en la derecha: 2
+compound_statement (35)
+    en la izquierda: 7, en la derecha: 1 13
+optional_statements (36)
+    en la izquierda: 8 9, en la derecha: 7
+statement_list (37)
+    en la izquierda: 10 11, en la derecha: 8 11
+statement (38)
+    en la izquierda: 12 13 14 15 16 17 18, en la derecha: 10 11 14
+    15 16
+print_list (39)
+    en la izquierda: 19 20, en la derecha: 17 20
+print_item (40)
+    en la izquierda: 21 22, en la derecha: 19 20
+read_list (41)
+    en la izquierda: 23 24, en la derecha: 18 24
+expression (42)
+    en la izquierda: 25 26 27 28 29 30 31 32, en la derecha: 12 14
+    15 16 21 25 26 27 28 29 30
+
+
+State 0
+
+    0 $accept: . program $end
+
+    PROGRAMA  desplazar e ir al estado 1
+
+    program  ir al estado 2
+
+
+State 1
+
+    1 program: PROGRAMA . ID PARI PARD PYC declarations compound_statement PUNTO
+
+    ID  desplazar e ir al estado 3
+
+
+State 2
+
+    0 $accept: program . $end
+
+    $end  desplazar e ir al estado 4
+
+
+State 3
+
+    1 program: PROGRAMA ID . PARI PARD PYC declarations compound_statement PUNTO
+
+    PARI  desplazar e ir al estado 5
+
+
+State 4
+
+    0 $accept: program $end .
+
+    $default  aceptar
+
+
+State 5
+
+    1 program: PROGRAMA ID PARI . PARD PYC declarations compound_statement PUNTO
+
+    PARD  desplazar e ir al estado 6
+
+
+State 6
+
+    1 program: PROGRAMA ID PARI PARD . PYC declarations compound_statement PUNTO
+
+    PYC  desplazar e ir al estado 7
+
+
+State 7
+
+    1 program: PROGRAMA ID PARI PARD PYC . declarations compound_statement PUNTO
+
+    $default  reduce usando la regla 3 (declarations)
+
+    declarations  ir al estado 8
+
+
+State 8
+
+    1 program: PROGRAMA ID PARI PARD PYC declarations . compound_statement PUNTO
+    2 declarations: declarations . VAR identifier_list DOSP type PYC
+
+    VAR       desplazar e ir al estado 9
+    COMIENZO  desplazar e ir al estado 10
+
+    compound_statement  ir al estado 11
+
+
+State 9
+
+    2 declarations: declarations VAR . identifier_list DOSP type PYC
+
+    ID  desplazar e ir al estado 12
+
+    identifier_list  ir al estado 13
+
+
+State 10
+
+    7 compound_statement: COMIENZO . optional_statements FIN
+
+    COMIENZO  desplazar e ir al estado 10
+    SI        desplazar e ir al estado 14
+    MIENTRAS  desplazar e ir al estado 15
+    IMPRIMIR  desplazar e ir al estado 16
+    LEER      desplazar e ir al estado 17
+    ID        desplazar e ir al estado 18
+
+    $default  reduce usando la regla 9 (optional_statements)
+
+    compound_statement   ir al estado 19
+    optional_statements  ir al estado 20
+    statement_list       ir al estado 21
+    statement            ir al estado 22
+
+
+State 11
+
+    1 program: PROGRAMA ID PARI PARD PYC declarations compound_statement . PUNTO
+
+    PUNTO  desplazar e ir al estado 23
+
+
+State 12
+
+    4 identifier_list: ID .
+
+    $default  reduce usando la regla 4 (identifier_list)
+
+
+State 13
+
+    2 declarations: declarations VAR identifier_list . DOSP type PYC
+    5 identifier_list: identifier_list . COMA ID
+
+    DOSP  desplazar e ir al estado 24
+    COMA  desplazar e ir al estado 25
+
+
+State 14
+
+   14 statement: SI . expression ENTONCES statement SINO statement
+   15          | SI . expression ENTONCES statement
+
+    MENOS  desplazar e ir al estado 26
+    PARI   desplazar e ir al estado 27
+    NUM    desplazar e ir al estado 28
+    ID     desplazar e ir al estado 29
+
+    expression  ir al estado 30
+
+
+State 15
+
+   16 statement: MIENTRAS . expression HACER statement
+
+    MENOS  desplazar e ir al estado 26
+    PARI   desplazar e ir al estado 27
+    NUM    desplazar e ir al estado 28
+    ID     desplazar e ir al estado 29
+
+    expression  ir al estado 31
+
+
+State 16
+
+   17 statement: IMPRIMIR . print_list
+
+    MENOS   desplazar e ir al estado 26
+    PARI    desplazar e ir al estado 27
+    NUM     desplazar e ir al estado 28
+    ID      desplazar e ir al estado 29
+    CADENA  desplazar e ir al estado 32
+
+    print_list  ir al estado 33
+    print_item  ir al estado 34
+    expression  ir al estado 35
+
+
+State 17
+
+   18 statement: LEER . read_list
+
+    ID  desplazar e ir al estado 36
+
+    read_list  ir al estado 37
+
+
+State 18
+
+   12 statement: ID . ASSIGN expression
+
+    ASSIGN  desplazar e ir al estado 38
+
+
+State 19
+
+   13 statement: compound_statement .
+
+    $default  reduce usando la regla 13 (statement)
+
+
+State 20
+
+    7 compound_statement: COMIENZO optional_statements . FIN
+
+    FIN  desplazar e ir al estado 39
+
+
+State 21
+
+    8 optional_statements: statement_list .
+   11 statement_list: statement_list . PYC statement
+
+    PYC  desplazar e ir al estado 40
+
+    $default  reduce usando la regla 8 (optional_statements)
+
+
+State 22
+
+   10 statement_list: statement .
+
+    $default  reduce usando la regla 10 (statement_list)
+
+
+State 23
+
+    1 program: PROGRAMA ID PARI PARD PYC declarations compound_statement PUNTO .
+
+    $default  reduce usando la regla 1 (program)
+
+
+State 24
+
+    2 declarations: declarations VAR identifier_list DOSP . type PYC
+
+    ENTERO  desplazar e ir al estado 41
+
+    type  ir al estado 42
+
+
+State 25
+
+    5 identifier_list: identifier_list COMA . ID
+
+    ID  desplazar e ir al estado 43
+
+
+State 26
+
+   29 expression: MENOS . expression
+
+    MENOS  desplazar e ir al estado 26
+    PARI   desplazar e ir al estado 27
+    NUM    desplazar e ir al estado 28
+    ID     desplazar e ir al estado 29
+
+    expression  ir al estado 44
+
+
+State 27
+
+   30 expression: PARI . expression PARD
+
+    MENOS  desplazar e ir al estado 26
+    PARI   desplazar e ir al estado 27
+    NUM    desplazar e ir al estado 28
+    ID     desplazar e ir al estado 29
+
+    expression  ir al estado 45
+
+
+State 28
+
+   32 expression: NUM .
+
+    $default  reduce usando la regla 32 (expression)
+
+
+State 29
+
+   31 expression: ID .
+
+    $default  reduce usando la regla 31 (expression)
+
+
+State 30
+
+   14 statement: SI expression . ENTONCES statement SINO statement
+   15          | SI expression . ENTONCES statement
+   25 expression: expression . MAS expression
+   26           | expression . MENOS expression
+   27           | expression . MULT expression
+   28           | expression . DIV expression
+
+    ENTONCES  desplazar e ir al estado 46
+    MAS       desplazar e ir al estado 47
+    MENOS     desplazar e ir al estado 48
+    MULT      desplazar e ir al estado 49
+    DIV       desplazar e ir al estado 50
+
+
+State 31
+
+   16 statement: MIENTRAS expression . HACER statement
+   25 expression: expression . MAS expression
+   26           | expression . MENOS expression
+   27           | expression . MULT expression
+   28           | expression . DIV expression
+
+    HACER  desplazar e ir al estado 51
+    MAS    desplazar e ir al estado 47
+    MENOS  desplazar e ir al estado 48
+    MULT   desplazar e ir al estado 49
+    DIV    desplazar e ir al estado 50
+
+
+State 32
+
+   22 print_item: CADENA .
+
+    $default  reduce usando la regla 22 (print_item)
+
+
+State 33
+
+   17 statement: IMPRIMIR print_list .
+   20 print_list: print_list . COMA print_item
+
+    COMA  desplazar e ir al estado 52
+
+    $default  reduce usando la regla 17 (statement)
+
+
+State 34
+
+   19 print_list: print_item .
+
+    $default  reduce usando la regla 19 (print_list)
+
+
+State 35
+
+   21 print_item: expression .
+   25 expression: expression . MAS expression
+   26           | expression . MENOS expression
+   27           | expression . MULT expression
+   28           | expression . DIV expression
+
+    MAS    desplazar e ir al estado 47
+    MENOS  desplazar e ir al estado 48
+    MULT   desplazar e ir al estado 49
+    DIV    desplazar e ir al estado 50
+
+    $default  reduce usando la regla 21 (print_item)
+
+
+State 36
+
+   23 read_list: ID .
+
+    $default  reduce usando la regla 23 (read_list)
+
+
+State 37
+
+   18 statement: LEER read_list .
+   24 read_list: read_list . COMA ID
+
+    COMA  desplazar e ir al estado 53
+
+    $default  reduce usando la regla 18 (statement)
+
+
+State 38
+
+   12 statement: ID ASSIGN . expression
+
+    MENOS  desplazar e ir al estado 26
+    PARI   desplazar e ir al estado 27
+    NUM    desplazar e ir al estado 28
+    ID     desplazar e ir al estado 29
+
+    expression  ir al estado 54
+
+
+State 39
+
+    7 compound_statement: COMIENZO optional_statements FIN .
+
+    $default  reduce usando la regla 7 (compound_statement)
+
+
+State 40
+
+   11 statement_list: statement_list PYC . statement
+
+    COMIENZO  desplazar e ir al estado 10
+    SI        desplazar e ir al estado 14
+    MIENTRAS  desplazar e ir al estado 15
+    IMPRIMIR  desplazar e ir al estado 16
+    LEER      desplazar e ir al estado 17
+    ID        desplazar e ir al estado 18
+
+    compound_statement  ir al estado 19
+    statement           ir al estado 55
+
+
+State 41
+
+    6 type: ENTERO .
+
+    $default  reduce usando la regla 6 (type)
+
+
+State 42
+
+    2 declarations: declarations VAR identifier_list DOSP type . PYC
+
+    PYC  desplazar e ir al estado 56
+
+
+State 43
+
+    5 identifier_list: identifier_list COMA ID .
+
+    $default  reduce usando la regla 5 (identifier_list)
+
+
+State 44
+
+   25 expression: expression . MAS expression
+   26           | expression . MENOS expression
+   27           | expression . MULT expression
+   28           | expression . DIV expression
+   29           | MENOS expression .
+
+    $default  reduce usando la regla 29 (expression)
+
+
+State 45
+
+   25 expression: expression . MAS expression
+   26           | expression . MENOS expression
+   27           | expression . MULT expression
+   28           | expression . DIV expression
+   30           | PARI expression . PARD
+
+    MAS    desplazar e ir al estado 47
+    MENOS  desplazar e ir al estado 48
+    MULT   desplazar e ir al estado 49
+    PARD   desplazar e ir al estado 57
+    DIV    desplazar e ir al estado 50
+
+
+State 46
+
+   14 statement: SI expression ENTONCES . statement SINO statement
+   15          | SI expression ENTONCES . statement
+
+    COMIENZO  desplazar e ir al estado 10
+    SI        desplazar e ir al estado 14
+    MIENTRAS  desplazar e ir al estado 15
+    IMPRIMIR  desplazar e ir al estado 16
+    LEER      desplazar e ir al estado 17
+    ID        desplazar e ir al estado 18
+
+    compound_statement  ir al estado 19
+    statement           ir al estado 58
+
+
+State 47
+
+   25 expression: expression MAS . expression
+
+    MENOS  desplazar e ir al estado 26
+    PARI   desplazar e ir al estado 27
+    NUM    desplazar e ir al estado 28
+    ID     desplazar e ir al estado 29
+
+    expression  ir al estado 59
+
+
+State 48
+
+   26 expression: expression MENOS . expression
+
+    MENOS  desplazar e ir al estado 26
+    PARI   desplazar e ir al estado 27
+    NUM    desplazar e ir al estado 28
+    ID     desplazar e ir al estado 29
+
+    expression  ir al estado 60
+
+
+State 49
+
+   27 expression: expression MULT . expression
+
+    MENOS  desplazar e ir al estado 26
+    PARI   desplazar e ir al estado 27
+    NUM    desplazar e ir al estado 28
+    ID     desplazar e ir al estado 29
+
+    expression  ir al estado 61
+
+
+State 50
+
+   28 expression: expression DIV . expression
+
+    MENOS  desplazar e ir al estado 26
+    PARI   desplazar e ir al estado 27
+    NUM    desplazar e ir al estado 28
+    ID     desplazar e ir al estado 29
+
+    expression  ir al estado 62
+
+
+State 51
+
+   16 statement: MIENTRAS expression HACER . statement
+
+    COMIENZO  desplazar e ir al estado 10
+    SI        desplazar e ir al estado 14
+    MIENTRAS  desplazar e ir al estado 15
+    IMPRIMIR  desplazar e ir al estado 16
+    LEER      desplazar e ir al estado 17
+    ID        desplazar e ir al estado 18
+
+    compound_statement  ir al estado 19
+    statement           ir al estado 63
+
+
+State 52
+
+   20 print_list: print_list COMA . print_item
+
+    MENOS   desplazar e ir al estado 26
+    PARI    desplazar e ir al estado 27
+    NUM     desplazar e ir al estado 28
+    ID      desplazar e ir al estado 29
+    CADENA  desplazar e ir al estado 32
+
+    print_item  ir al estado 64
+    expression  ir al estado 35
+
+
+State 53
+
+   24 read_list: read_list COMA . ID
+
+    ID  desplazar e ir al estado 65
+
+
+State 54
+
+   12 statement: ID ASSIGN expression .
+   25 expression: expression . MAS expression
+   26           | expression . MENOS expression
+   27           | expression . MULT expression
+   28           | expression . DIV expression
+
+    MAS    desplazar e ir al estado 47
+    MENOS  desplazar e ir al estado 48
+    MULT   desplazar e ir al estado 49
+    DIV    desplazar e ir al estado 50
+
+    $default  reduce usando la regla 12 (statement)
+
+
+State 55
+
+   11 statement_list: statement_list PYC statement .
+
+    $default  reduce usando la regla 11 (statement_list)
+
+
+State 56
+
+    2 declarations: declarations VAR identifier_list DOSP type PYC .
+
+    $default  reduce usando la regla 2 (declarations)
+
+
+State 57
+
+   30 expression: PARI expression PARD .
+
+    $default  reduce usando la regla 30 (expression)
+
+
+State 58
+
+   14 statement: SI expression ENTONCES statement . SINO statement
+   15          | SI expression ENTONCES statement .
+
+    SINO  desplazar e ir al estado 66
+
+    SINO      [reduce usando la regla 15 (statement)]
+    $default  reduce usando la regla 15 (statement)
+
+
+State 59
+
+   25 expression: expression . MAS expression
+   25           | expression MAS expression .
+   26           | expression . MENOS expression
+   27           | expression . MULT expression
+   28           | expression . DIV expression
+
+    MULT  desplazar e ir al estado 49
+    DIV   desplazar e ir al estado 50
+
+    $default  reduce usando la regla 25 (expression)
+
+
+State 60
+
+   25 expression: expression . MAS expression
+   26           | expression . MENOS expression
+   26           | expression MENOS expression .
+   27           | expression . MULT expression
+   28           | expression . DIV expression
+
+    MULT  desplazar e ir al estado 49
+    DIV   desplazar e ir al estado 50
+
+    $default  reduce usando la regla 26 (expression)
+
+
+State 61
+
+   25 expression: expression . MAS expression
+   26           | expression . MENOS expression
+   27           | expression . MULT expression
+   27           | expression MULT expression .
+   28           | expression . DIV expression
+
+    $default  reduce usando la regla 27 (expression)
+
+
+State 62
+
+   25 expression: expression . MAS expression
+   26           | expression . MENOS expression
+   27           | expression . MULT expression
+   28           | expression . DIV expression
+   28           | expression DIV expression .
+
+    $default  reduce usando la regla 28 (expression)
+
+
+State 63
+
+   16 statement: MIENTRAS expression HACER statement .
+
+    $default  reduce usando la regla 16 (statement)
+
+
+State 64
+
+   20 print_list: print_list COMA print_item .
+
+    $default  reduce usando la regla 20 (print_list)
+
+
+State 65
+
+   24 read_list: read_list COMA ID .
+
+    $default  reduce usando la regla 24 (read_list)
+
+
+State 66
+
+   14 statement: SI expression ENTONCES statement SINO . statement
+
+    COMIENZO  desplazar e ir al estado 10
+    SI        desplazar e ir al estado 14
+    MIENTRAS  desplazar e ir al estado 15
+    IMPRIMIR  desplazar e ir al estado 16
+    LEER      desplazar e ir al estado 17
+    ID        desplazar e ir al estado 18
+
+    compound_statement  ir al estado 19
+    statement           ir al estado 67
+
+
+State 67
+
+   14 statement: SI expression ENTONCES statement SINO statement .
+
+    $default  reduce usando la regla 14 (statement)

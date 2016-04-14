@@ -16,15 +16,23 @@
 }
 
 %token PROGRAMA VAR ENTERO COMIENZO FIN SI ENTONCES SINO
-%token MIENTRAS HACER IMPIRMIR LEER ID NUM CADENA PYC DOSP PUNTO COMA
+%token MIENTRAS HACER IMPRIMIR LEER PYC DOSP PUNTO COMA
 %token MAS MENOS MULT PARI PARD DIV ASSIGN
 
 /* Tokens asociados a tipos de datos */
 %token <entero> NUM
 %token <cadena> ID
 %token <cadena> CADENA
+
 /* No terminales asociados a tipos de datos */
 %type <entero> expression statement read_list
+
+/* Prioridades de terminales de menos a mas */
+/* Y asociatividad izquierda */
+%left MAS MENOS
+%left MULT DIV
+%left UMENOS
+
 
 %%
 /* Reglas de produccion */
@@ -134,58 +142,53 @@ print_item          :   expression
                     ;
 read_list           :   ID
                             {
-                                printf("read_list-> %s\n", $1);
+                                printf("read_list-> id (%s)\n", $1);
+                                /*printf("read_list-> id (%s)\n", $1);
                                 $$ =recuperaVar(variables, $1);
-                                free($1);
+                                free($1);*/
                             }
                     |   read_list COMA ID
                             {
-                                printf("read_list-> read_list , %s\n", $1);
+                                printf("read_list-> read_list , id(%s)\n", $1);
+                                /*printf("read_list-> read_list , id(%s)\n", $1);
                                 $$ =recuperaVar(variables, $1);
-                                free($1);
+                                free($1);*/
                             }
                     ;
 expression          :   expression MAS expression
                             {
                                 printf("expression -> expression + expression\n");
-                                $$ = $1 + $3;
                             }
                     |   expression MENOS expression
                             {
                                 printf("expression -> expression - expression\n");
-                                $$ = $1 - $3;
                             }
                     |   expression MULT expression
                             {
                                 printf("expression -> expression * expression\n");
-                                $$ = $1 * $3;
                             }
                     |   expression DIV expression
                             {
                                 printf("expression -> expression / expression\n");
-                                $$ = $1 / $3;
                             }
-                    |   MENOS expression
+                    |   MENOS expression %prec UMENOS
                             {
                                 printf("expression -> - expression\n");
-                                $$ = -$2;
                             }
                     |   PARI expression PARD
                             {
                                 printf("expression -> ( expression )\n");
-                                $$ = $2;
                             }
                     |   ID
                             {
-                                printf("expression -> %s\n", $1);
-                                $$ =recuperaVar(variables, $1);
-                                free($1);
+                                printf("expression -> id(%s)\n", $1);
+                                /*$$ =recuperaVar(variables, $1);
+                                free($1);*/
                             }
                     |   NUM
-                        {
-                            printf("expression -> num [=%d]\n", $1);
-                            $$ = $1;
-                        }
+                            {
+                                printf("expression -> num ");
+                            }
                     ;
 
 %%
