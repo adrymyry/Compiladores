@@ -38,7 +38,7 @@
 /* Reglas de produccion */
 program             :   PROGRAMA ID PARI PARD PYC declarations compound_statement PUNTO
                             {
-                                printf("program -> programa id(); declarations compound_statement.\n") ;
+                                printf("program -> programa id(); declarations compound_statement .\n") ;
                             }
                     ;
 declarations        :   declarations VAR identifier_list DOSP type PYC
@@ -142,14 +142,14 @@ print_item          :   expression
                     ;
 read_list           :   ID
                             {
-                                printf("read_list-> id (%s)\n", $1);
+                                printf("read_list-> id\n");
                                 /*printf("read_list-> id (%s)\n", $1);
                                 $$ =recuperaVar(variables, $1);
                                 free($1);*/
                             }
                     |   read_list COMA ID
                             {
-                                printf("read_list-> read_list , id(%s)\n", $1);
+                                printf("read_list-> read_list , id\n");
                                 /*printf("read_list-> read_list , id(%s)\n", $1);
                                 $$ =recuperaVar(variables, $1);
                                 free($1);*/
@@ -181,8 +181,9 @@ expression          :   expression MAS expression
                             }
                     |   ID
                             {
-                                printf("expression -> id(%s)\n", $1);
-                                /*$$ =recuperaVar(variables, $1);
+                                printf("expression -> id\n");
+                                /*printf("expression -> id(%s)\n", $1);
+                                $$ =recuperaVar(variables, $1);
                                 free($1);*/
                             }
                     |   NUM
@@ -195,7 +196,7 @@ expression          :   expression MAS expression
 
 /* Tratamiento de errores */
 void yyerror(char const *msg) {
-    fprintf(stderr, "Error sintáctico %d: %s\n", yylineno, msg);
+    fprintf(stderr, "Error sintáctico (linea %d): %s\n", yylineno, msg);
 }
 
 int main(void) {

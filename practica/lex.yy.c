@@ -562,7 +562,7 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "lexico.l"
 #line 2 "lexico.l"
-	#include "lexico.h"
+	#include "sintactico.tab.h"
 	#include <string.h>
 	int inicio_comentario = 0;
 
@@ -857,222 +857,196 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 18 "lexico.l"
-{ printf("PROGRAMA\n");
-								  return PROGRAMA; }
+{ return PROGRAMA; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 20 "lexico.l"
-{ printf("VAR\n");
-								  return VAR; }
+#line 19 "lexico.l"
+{ return VAR; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 22 "lexico.l"
-{ printf("ENTERO\n");
-								  return ENTERO; }
+#line 20 "lexico.l"
+{ return ENTERO; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 24 "lexico.l"
-{ printf("COMIENZO\n");
-							  	  return COMIENZO; }
+#line 21 "lexico.l"
+{ return COMIENZO; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 26 "lexico.l"
-{ printf("FIN\n");
-								  return FIN; }
+#line 22 "lexico.l"
+{ return FIN; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 28 "lexico.l"
-{ printf("SI\n");
-								  return SI; }
+#line 23 "lexico.l"
+{ return SI; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 30 "lexico.l"
-{ printf("ENTONCES\n");
-							  	  return ENTONCES; }
+#line 24 "lexico.l"
+{ return ENTONCES; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 32 "lexico.l"
-{ printf("SINO\n");
-								  return SINO; }
+#line 25 "lexico.l"
+{ return SINO; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 34 "lexico.l"
-{ printf("MIENTRAS\n");
-								  return MIENTRAS; }
+#line 26 "lexico.l"
+{ return MIENTRAS; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 36 "lexico.l"
-{ printf("HACER\n");
-							  	  return HACER; }
+#line 27 "lexico.l"
+{ return HACER; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 38 "lexico.l"
-{ printf("IMPRIMIR\n");
-								  return IMPRIMIR; }
+#line 28 "lexico.l"
+{ return IMPRIMIR; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 40 "lexico.l"
-{ printf("LEER\n");
-								  return LEER; }
+#line 29 "lexico.l"
+{ return LEER; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 43 "lexico.l"
-{ printf("Id: %s\n", yytext);
-    						  	  return ID;
+#line 31 "lexico.l"
+{ return ID;
 								}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 46 "lexico.l"
+#line 33 "lexico.l"
 { printf("Error léxico en línea %d: Identificador %s no válido.\n", yylineno, yytext); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 48 "lexico.l"
+#line 35 "lexico.l"
 { long long max = (long long)1<<31;
 								  if (atoll(yytext) > max) {
 									printf("Error léxico en línea %d: Entero %s no válido.\n", yylineno, yytext);
 								  } else {
-									printf("Num: %s\n", yytext);
 									return NUM;
 								  }
 							   	}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 58 "lexico.l"
-{ printf("Cadena: %s\n", yytext);
-								  return CADENA; }
+#line 44 "lexico.l"
+{ return CADENA; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 60 "lexico.l"
+#line 45 "lexico.l"
 { printf("Error léxico en línea %d, cadena no cerrada: %s\n", yylineno, yytext);
 								}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 63 "lexico.l"
-{ printf("PYC\n");
-								  return PYC; }
+#line 48 "lexico.l"
+{ return PYC; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 65 "lexico.l"
-{ printf("DOSP\n");
-								  return DOSP; }
+#line 49 "lexico.l"
+{ return DOSP; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 67 "lexico.l"
-{ printf("PUNTO\n");
-								  return PUNTO; }
+#line 50 "lexico.l"
+{ return PUNTO; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 69 "lexico.l"
-{ printf("COMA\n");
-								  return COMA; }
+#line 51 "lexico.l"
+{ return COMA; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 71 "lexico.l"
-{ printf("MAS\n");
-								  return MAS; }
+#line 52 "lexico.l"
+{ return MAS; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 73 "lexico.l"
-{ printf("MENOS\n");
-								  return MENOS; }
+#line 53 "lexico.l"
+{ return MENOS; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 75 "lexico.l"
-{ printf("MULT\n");
-  								  return MULT; }
+#line 54 "lexico.l"
+{ return MULT; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 77 "lexico.l"
-{ printf("PARI\n");
-								  return PARI; }
+#line 55 "lexico.l"
+{ return PARI; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 79 "lexico.l"
-{ printf("PARD\n");
-								  return PARD; }
+#line 56 "lexico.l"
+{ return PARD; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 81 "lexico.l"
-{ printf("DIV\n");
-								  return DIV; }
+#line 57 "lexico.l"
+{ return DIV; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 83 "lexico.l"
-{ printf("ASSIGN\n");
-								  return ASSIGN; }
+#line 58 "lexico.l"
+{ return ASSIGN; }
 	YY_BREAK
 case 29:
 /* rule 29 can match eol */
 YY_RULE_SETUP
-#line 87 "lexico.l"
+#line 61 "lexico.l"
 { }
 	YY_BREAK
 case 30:
 /* rule 30 can match eol */
 YY_RULE_SETUP
-#line 88 "lexico.l"
+#line 62 "lexico.l"
 { }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 91 "lexico.l"
+#line 65 "lexico.l"
 { BEGIN(comentario);
 								  inicio_comentario = yylineno; }
 	YY_BREAK
 case 32:
 /* rule 32 can match eol */
 YY_RULE_SETUP
-#line 93 "lexico.l"
+#line 67 "lexico.l"
 { }
 	YY_BREAK
 case YY_STATE_EOF(comentario):
-#line 94 "lexico.l"
+#line 68 "lexico.l"
 { printf("Comentario no cerrado en la línea %d\n", inicio_comentario);
  								  return 0; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 96 "lexico.l"
+#line 70 "lexico.l"
 { BEGIN(0); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 98 "lexico.l"
+#line 72 "lexico.l"
 { printf("Error léxico en %d: %s\n", yylineno, yytext); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 100 "lexico.l"
+#line 74 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 1076 "lex.yy.c"
+#line 1050 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2079,7 +2053,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 99 "lexico.l"
+#line 73 "lexico.l"
 
 
 

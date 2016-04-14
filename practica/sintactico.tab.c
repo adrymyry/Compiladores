@@ -465,8 +465,8 @@ static const yytype_uint8 yyrline[] =
 {
        0,    39,    39,    44,    49,    54,    58,    64,    70,    76,
       81,    86,    90,    96,   100,   104,   108,   112,   116,   120,
-     125,   129,   134,   138,   143,   149,   156,   160,   164,   168,
-     172,   176,   180,   186
+     125,   129,   134,   138,   143,   150,   158,   162,   166,   170,
+     174,   178,   182,   189
 };
 #endif
 
@@ -1281,7 +1281,7 @@ yyreduce:
         case 2:
 #line 40 "sintactico.y" /* yacc.c:1646  */
     {
-                                printf("program -> programa id(); declarations compound_statement.\n") ;
+                                printf("program -> programa id(); declarations compound_statement .\n") ;
                             }
 #line 1287 "sintactico.tab.c" /* yacc.c:1646  */
     break;
@@ -1457,91 +1457,94 @@ yyreduce:
   case 24:
 #line 144 "sintactico.y" /* yacc.c:1646  */
     {
-                                printf("read_list-> id(%s)\n", (yyvsp[0].cadena));
-                                /*$$ =recuperaVar(variables, $1);
+                                printf("read_list-> id\n");
+                                /*printf("read_list-> id (%s)\n", $1);
+                                $$ =recuperaVar(variables, $1);
                                 free($1);*/
                             }
-#line 1465 "sintactico.tab.c" /* yacc.c:1646  */
+#line 1466 "sintactico.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 150 "sintactico.y" /* yacc.c:1646  */
+#line 151 "sintactico.y" /* yacc.c:1646  */
     {
-                                printf("read_list-> read_list , id(%s)\n", (yyvsp[-2].entero));
-                                /*$$ =recuperaVar(variables, $1);
+                                printf("read_list-> read_list , id\n");
+                                /*printf("read_list-> read_list , id(%s)\n", $1);
+                                $$ =recuperaVar(variables, $1);
                                 free($1);*/
                             }
-#line 1475 "sintactico.tab.c" /* yacc.c:1646  */
+#line 1477 "sintactico.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 157 "sintactico.y" /* yacc.c:1646  */
+#line 159 "sintactico.y" /* yacc.c:1646  */
     {
                                 printf("expression -> expression + expression\n");
                             }
-#line 1483 "sintactico.tab.c" /* yacc.c:1646  */
+#line 1485 "sintactico.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 161 "sintactico.y" /* yacc.c:1646  */
+#line 163 "sintactico.y" /* yacc.c:1646  */
     {
                                 printf("expression -> expression - expression\n");
                             }
-#line 1491 "sintactico.tab.c" /* yacc.c:1646  */
+#line 1493 "sintactico.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 165 "sintactico.y" /* yacc.c:1646  */
+#line 167 "sintactico.y" /* yacc.c:1646  */
     {
                                 printf("expression -> expression * expression\n");
                             }
-#line 1499 "sintactico.tab.c" /* yacc.c:1646  */
+#line 1501 "sintactico.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 169 "sintactico.y" /* yacc.c:1646  */
+#line 171 "sintactico.y" /* yacc.c:1646  */
     {
                                 printf("expression -> expression / expression\n");
                             }
-#line 1507 "sintactico.tab.c" /* yacc.c:1646  */
+#line 1509 "sintactico.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 173 "sintactico.y" /* yacc.c:1646  */
+#line 175 "sintactico.y" /* yacc.c:1646  */
     {
                                 printf("expression -> - expression\n");
                             }
-#line 1515 "sintactico.tab.c" /* yacc.c:1646  */
+#line 1517 "sintactico.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 177 "sintactico.y" /* yacc.c:1646  */
+#line 179 "sintactico.y" /* yacc.c:1646  */
     {
                                 printf("expression -> ( expression )\n");
                             }
-#line 1523 "sintactico.tab.c" /* yacc.c:1646  */
+#line 1525 "sintactico.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 181 "sintactico.y" /* yacc.c:1646  */
+#line 183 "sintactico.y" /* yacc.c:1646  */
     {
-                                printf("expression -> id(%s)\n", (yyvsp[0].cadena));
-                                /*$$ =recuperaVar(variables, $1);
+                                printf("expression -> id\n");
+                                /*printf("expression -> id(%s)\n", $1);
+                                $$ =recuperaVar(variables, $1);
                                 free($1);*/
                             }
-#line 1533 "sintactico.tab.c" /* yacc.c:1646  */
+#line 1536 "sintactico.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 187 "sintactico.y" /* yacc.c:1646  */
+#line 190 "sintactico.y" /* yacc.c:1646  */
     {
                                 printf("expression -> num ");
                             }
-#line 1541 "sintactico.tab.c" /* yacc.c:1646  */
+#line 1544 "sintactico.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1545 "sintactico.tab.c" /* yacc.c:1646  */
+#line 1548 "sintactico.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1769,12 +1772,12 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 192 "sintactico.y" /* yacc.c:1906  */
+#line 195 "sintactico.y" /* yacc.c:1906  */
 
 
 /* Tratamiento de errores */
 void yyerror(char const *msg) {
-    fprintf(stderr, "Error sintáctico %d: %s\n", yylineno, msg);
+    fprintf(stderr, "Error sintáctico (linea %d): %s\n", yylineno, msg);
 }
 
 int main(void) {

@@ -1,5 +1,5 @@
 %{
-	#include "lexico.h"
+	#include "sintactico.tab.h"
 	#include <string.h>
 	int inicio_comentario = 0;
 %}
@@ -15,33 +15,20 @@ C .
 
 %%
 
-programa 						{ printf("PROGRAMA\n");
-								  return PROGRAMA; }
-var 							{ printf("VAR\n");
-								  return VAR; }
-entero 							{ printf("ENTERO\n");
-								  return ENTERO; }
-comienzo 						{ printf("COMIENZO\n");
-							  	  return COMIENZO; }
-fin 							{ printf("FIN\n");
-								  return FIN; }
-si 								{ printf("SI\n");
-								  return SI; }
-entonces 						{ printf("ENTONCES\n");
-							  	  return ENTONCES; }
-si-no 							{ printf("SINO\n");
-								  return SINO; }
-mientras 						{ printf("MIENTRAS\n");
-								  return MIENTRAS; }
-hacer 							{ printf("HACER\n");
-							  	  return HACER; }
-imprimir 						{ printf("IMPRIMIR\n");
-								  return IMPRIMIR; }
-leer 							{ printf("LEER\n");
-								  return LEER; }
+programa 						{ return PROGRAMA; }
+var 							{ return VAR; }
+entero 							{ return ENTERO; }
+comienzo 						{ return COMIENZO; }
+fin 							{ return FIN; }
+si 								{ return SI; }
+entonces 						{ return ENTONCES; }
+si-no 							{ return SINO; }
+mientras 						{ return MIENTRAS; }
+hacer 							{ return HACER; }
+imprimir 						{ return IMPRIMIR; }
+leer 							{ return LEER; }
 
-({L}|_)({L}|_|{D}){0,15}		{ printf("Id: %s\n", yytext);
-    						  	  return ID;
+({L}|_)({L}|_|{D}){0,15}		{ return ID;
 								}
 ({L}|_)({L}|_|{D}){16,}			{ printf("Error léxico en línea %d: Identificador %s no válido.\n", yylineno, yytext); }
 
@@ -49,39 +36,26 @@ leer 							{ printf("LEER\n");
 								  if (atoll(yytext) > max) {
 									printf("Error léxico en línea %d: Entero %s no válido.\n", yylineno, yytext);
 								  } else {
-									printf("Num: %s\n", yytext);
 									return NUM;
 								  }
 							   	}
 
 
-\"([^"\n]+|\\\")*\"				{ printf("Cadena: %s\n", yytext);
-								  return CADENA; }
+\"([^"\n]+|\\\")*\"				{ return CADENA; }
 \"([^"\n]+|\\\")*				{ printf("Error léxico en línea %d, cadena no cerrada: %s\n", yylineno, yytext);
 								}
 
-;	 							{ printf("PYC\n");
-								  return PYC; }
-:	 							{ printf("DOSP\n");
-								  return DOSP; }
-"."	 							{ printf("PUNTO\n");
-								  return PUNTO; }
-,	 							{ printf("COMA\n");
-								  return COMA; }
-"+"	 							{ printf("MAS\n");
-								  return MAS; }
--	 							{ printf("MENOS\n");
-								  return MENOS; }
-"*"	 							{ printf("MULT\n");
-  								  return MULT; }
-"("	 							{ printf("PARI\n");
-								  return PARI; }
-")"	 							{ printf("PARD\n");
-								  return PARD; }
-"/"	 							{ printf("DIV\n");
-								  return DIV; }
-:=	 							{ printf("ASSIGN\n");
-								  return ASSIGN; }
+;	 							{ return PYC; }
+:	 							{ return DOSP; }
+"."	 							{ return PUNTO; }
+,	 							{ return COMA; }
+"+"	 							{ return MAS; }
+-	 							{ return MENOS; }
+"*"	 							{ return MULT; }
+"("	 							{ return PARI; }
+")"	 							{ return PARD; }
+"/"	 							{ return DIV; }
+:=	 							{ return ASSIGN; }
 
 
 "//"{C}*\n						{ }

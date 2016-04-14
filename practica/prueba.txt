@@ -1,4 +1,4 @@
-programa prueba();
+programa prueba ();
 var a,b,c: entero;
 comienzo
     imprimir "Inicio del programa\n";
@@ -11,4 +11,4 @@ comienzo
                 c := c-2+1
             fin;
     imprimir "Final","\n"
-fin
+fin.
