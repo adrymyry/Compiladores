@@ -3,7 +3,7 @@
 
 typedef struct varRep *lista;
 
-lista crearVar(lista l, char *x, int valor);
+lista crearVar(lista l, char *x);
 int recuperaVar(lista l, char *x);
 void borrar(lista l);
 

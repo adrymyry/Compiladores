@@ -6,7 +6,6 @@
     extern int yylex();
     int contador = 0;
     lista variables;
-    lista cadenas;
 %}
 
 /* Definicion de tipos de datos para símbolos de la gramática */
@@ -38,12 +37,16 @@
 /* Reglas de produccion */
 program             :   PROGRAMA ID PARI PARD PYC declarations compound_statement PUNTO
                             {
-                                printf("program -> programa id(); declarations compound_statement .\n") ;
+                                printf("program -> programa id [%s] (); declarations compound_statement .\n", $2) ;
                             }
                     ;
 declarations        :   declarations VAR identifier_list DOSP type PYC
                             {
                                 printf("declarations -> declarations var identifier_list : type ;\n");
+                            }
+                    |   error PYC
+                            {
+                                printf("Error sintáctico en declaración de variables.\n");
                             }
                     |
                             {
@@ -53,11 +56,13 @@ declarations        :   declarations VAR identifier_list DOSP type PYC
 
 identifier_list     :   ID
                             {
-                                printf("identifier_list -> id\n");
+                                printf("identifier_list -> id [%s]\n", $1);
+                                variables = crearVar(variables, $1);
                             }
                     |   identifier_list COMA ID
                             {
-                                printf("identifier_list -> identifier_list , id\n");
+                                printf("identifier_list -> identifier_list , id [%s]\n", $3);
+                                variables = crearVar(variables, $3);
                             }
                     ;
 
@@ -70,6 +75,10 @@ type                :   ENTERO
 compound_statement  :   COMIENZO optional_statements FIN
                             {
                                 printf("compound_statement -> comienzo optional_statements fin\n");
+                            }
+                    |   error FIN
+                            {
+                                printf("Error sintáctico en bloque de sentecias\n");
                             }
                     ;
 
@@ -95,7 +104,7 @@ statement_list      :   statement
 
 statement           :   ID ASSIGN expression
                             {
-                                printf("statement -> id := expression\n");
+                                printf("statement -> id [%s] := expression\n", $1);
                             }
                     |   compound_statement
                             {
@@ -137,22 +146,16 @@ print_item          :   expression
                             }
                     |   CADENA
                             {
-                                printf("print_item -> cadena\n");
+                                printf("print_item -> cadena [%s]\n", $1);
                             }
                     ;
 read_list           :   ID
                             {
-                                printf("read_list-> id\n");
-                                /*printf("read_list-> id (%s)\n", $1);
-                                $$ =recuperaVar(variables, $1);
-                                free($1);*/
+                                printf("read_list-> id [%s]\n", $1);
                             }
                     |   read_list COMA ID
                             {
-                                printf("read_list-> read_list , id\n");
-                                /*printf("read_list-> read_list , id(%s)\n", $1);
-                                $$ =recuperaVar(variables, $1);
-                                free($1);*/
+                                printf("read_list-> read_list , id [%s]\n", $3);
                             }
                     ;
 expression          :   expression MAS expression
@@ -181,14 +184,13 @@ expression          :   expression MAS expression
                             }
                     |   ID
                             {
-                                printf("expression -> id\n");
-                                /*printf("expression -> id(%s)\n", $1);
+                                printf("expression -> id [%s]\n", $1);
                                 $$ =recuperaVar(variables, $1);
-                                free($1);*/
+                                free($1);
                             }
                     |   NUM
                             {
-                                printf("expression -> num ");
+                                printf("expression -> num [=%d]\n", $1);
                             }
                     ;
 
@@ -203,6 +205,5 @@ int main(void) {
     yydebug=0; //Para que no salga el debug
     yyparse();
     borrar(variables);
-    borrar(cadenas);
     return 0;
 }

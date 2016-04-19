@@ -28,7 +28,8 @@ hacer 							{ return HACER; }
 imprimir 						{ return IMPRIMIR; }
 leer 							{ return LEER; }
 
-({L}|_)({L}|_|{D}){0,15}		{ return ID;
+({L}|_)({L}|_|{D}){0,15}		{ yylval.cadena = strdup(yytext);
+															return ID;
 								}
 ({L}|_)({L}|_|{D}){16,}			{ printf("Error léxico en línea %d: Identificador %s no válido.\n", yylineno, yytext); }
 
@@ -36,12 +37,14 @@ leer 							{ return LEER; }
 								  if (atoll(yytext) > max) {
 									printf("Error léxico en línea %d: Entero %s no válido.\n", yylineno, yytext);
 								  } else {
-									return NUM;
+										yylval.entero = atoi(yytext);
+										return NUM;
 								  }
 							   	}
 
 
-\"([^"\n]+|\\\")*\"				{ return CADENA; }
+\"([^"\n]+|\\\")*\"				{ yylval.cadena = strdup(yytext);
+														return CADENA; }
 \"([^"\n]+|\\\")*				{ printf("Error léxico en línea %d, cadena no cerrada: %s\n", yylineno, yytext);
 								}
 

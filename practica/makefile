@@ -13,5 +13,5 @@ clean:
 run: prueba prueba.txt
 		./prueba < prueba.txt
 
-MAC: lex.yy.c main.c
-	gcc lex.yy.c main.c -ll -o prueba
+MAC: lex.yy.c sintactico.tab.c listaVar.c listaVar.h
+		gcc lex.yy.c sintactico.tab.c listaVar.c -ll -o prueba

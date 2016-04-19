@@ -5,20 +5,24 @@
 
 struct varRep{
     char *nombre;
-    int valor;
     struct varRep *sig;
 };
 
 
-lista crearVar(lista l, char *x, int valor){
+lista crearVar(lista l, char *x){
     struct varRep *nuevo = (struct varRep*)malloc(sizeof(struct varRep));
     if (nuevo == NULL) {
         fprintf(stderr, "Sin memoria!\n");
         exit(1);
     }
-    nuevo->sig = l;
-    nuevo->nombre = x;
-    nuevo->valor = valor;
+    if (!recuperaVar(l, x)) {
+        nuevo->sig = l;
+        nuevo->nombre = x;
+    } else {
+      fprintf(stderr, "Nombre de variable ya usado\n");
+      exit(2);
+    }
+
     return nuevo;
 }
 
@@ -27,7 +31,7 @@ int recuperaVar(lista l, char *x){
     while(n != NULL) {
         if (!strcmp(n->nombre, x)) {
             // Encontrada!
-            return n->valor;
+            return 1;
         }
         n = n->sig;
     }
