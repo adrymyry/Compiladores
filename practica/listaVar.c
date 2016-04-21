@@ -19,8 +19,8 @@ lista crearVar(lista l, char *x){
         nuevo->sig = l;
         nuevo->nombre = x;
     } else {
-      fprintf(stderr, "Nombre de variable ya usado\n");
-      exit(2);
+        fprintf(stderr, "Nombre de variable ya usado\n");
+        exit(2);
     }
 
     return nuevo;
@@ -35,7 +35,7 @@ int recuperaVar(lista l, char *x){
         }
         n = n->sig;
     }
-    // La variable no está. Considero que vale 0
+    // La variable no está.
     return 0;
 }
 

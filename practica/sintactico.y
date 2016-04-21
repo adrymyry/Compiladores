@@ -23,9 +23,6 @@
 %token <cadena> ID
 %token <cadena> CADENA
 
-/* No terminales asociados a tipos de datos */
-%type <entero> expression statement read_list
-
 /* Prioridades de terminales de menos a mas */
 /* Y asociatividad izquierda */
 %left MAS MENOS
@@ -37,7 +34,8 @@
 /* Reglas de produccion */
 program             :   PROGRAMA ID PARI PARD PYC declarations compound_statement PUNTO
                             {
-                                printf("program -> programa id [%s] (); declarations compound_statement .\n", $2) ;
+                                printf("program -> programa id [%s] (); declarations compound_statement .\n", $2);
+                                variables = crearVar(variables, $2);
                             }
                     ;
 declarations        :   declarations VAR identifier_list DOSP type PYC
@@ -46,7 +44,7 @@ declarations        :   declarations VAR identifier_list DOSP type PYC
                             }
                     |   error PYC
                             {
-                                printf("Error sintáctico en declaración de variables.\n");
+                                fprintf(stderr, "Error sintáctico en declaración de variables.\n");
                             }
                     |
                             {
@@ -78,7 +76,7 @@ compound_statement  :   COMIENZO optional_statements FIN
                             }
                     |   error FIN
                             {
-                                printf("Error sintáctico en bloque de sentecias\n");
+                                fprintf(stderr, "Error sintáctico en bloque de sentecias\n");
                             }
                     ;
 
@@ -105,6 +103,9 @@ statement_list      :   statement
 statement           :   ID ASSIGN expression
                             {
                                 printf("statement -> id [%s] := expression\n", $1);
+                                if (!recuperaVar(variables, $1)){
+                                    fprintf(stderr, "La variable %s no ha sido declarada\n", $1);
+                                }
                             }
                     |   compound_statement
                             {
@@ -185,8 +186,9 @@ expression          :   expression MAS expression
                     |   ID
                             {
                                 printf("expression -> id [%s]\n", $1);
-                                $$ =recuperaVar(variables, $1);
-                                free($1);
+                                if (!recuperaVar(variables, $1)){
+                                    fprintf(stderr, "La variable %s no ha sido declarada\n", $1);
+                                }
                             }
                     |   NUM
                             {
