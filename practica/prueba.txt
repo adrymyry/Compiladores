@@ -3,7 +3,7 @@ var a,b,c: entero;
 comienzo
     imprimir "Inicio del programa\n";
     a := 0; b := 0; c := 5+2-2;
-    si (a) entonces imprimir "a","\n"
+    si (a) entonces imprimir "a","\n", "\n"
     si-no si (b) entonces imprimir "No a y b\n"
         si-no mientras (c) hacer
             comienzo

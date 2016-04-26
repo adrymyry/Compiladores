@@ -1,11 +1,14 @@
 %{
-    #include "listaVar.h"
+    #include "tabla_sim.h"
+    #include "codigo.h"
     #include <stdio.h>
+    #include <string.h>
     void yyerror(char const *msg);
     extern int yylineno;
     extern int yylex();
-    int contador = 0;
-    lista variables;
+    int contador = 1;
+    tablaVar variables;
+    tablaCad cadenas;
 %}
 
 /* Definicion de tipos de datos para símbolos de la gramática */
@@ -29,13 +32,16 @@
 %left MULT DIV
 %left UMENOS
 
+%expect 2
+
 
 %%
 /* Reglas de produccion */
 program             :   PROGRAMA ID PARI PARD PYC declarations compound_statement PUNTO
                             {
                                 printf("program -> programa id [%s] (); declarations compound_statement .\n", $2);
-                                variables = crearVar(variables, $2);
+                                imprimirTablaCad(cadenas);
+                                imprimirTablaVar(variables);
                             }
                     ;
 declarations        :   declarations VAR identifier_list DOSP type PYC
@@ -55,12 +61,14 @@ declarations        :   declarations VAR identifier_list DOSP type PYC
 identifier_list     :   ID
                             {
                                 printf("identifier_list -> id [%s]\n", $1);
-                                variables = crearVar(variables, $1);
+                                char* aux = concatena("_", $1);
+                                variables = crearVar(variables, aux, yylineno);
                             }
                     |   identifier_list COMA ID
                             {
                                 printf("identifier_list -> identifier_list , id [%s]\n", $3);
-                                variables = crearVar(variables, $3);
+                                char* aux = concatena("_", $3);
+                                variables = crearVar(variables, aux, yylineno);
                             }
                     ;
 
@@ -148,15 +156,26 @@ print_item          :   expression
                     |   CADENA
                             {
                                 printf("print_item -> cadena [%s]\n", $1);
+                                char * aux = concatenaInt("$str", contador);
+                                cadenas = crearCad(cadenas, &aux, $1);
+                                if (!strcmp(concatenaInt("$str", contador), aux)) {
+                                    contador++;
+                                }
                             }
                     ;
 read_list           :   ID
                             {
                                 printf("read_list-> id [%s]\n", $1);
+                                if (!recuperaVar(variables, $1)){
+                                    fprintf(stderr, "La variable %s no ha sido declarada\n", $1);
+                                }
                             }
                     |   read_list COMA ID
                             {
                                 printf("read_list-> read_list , id [%s]\n", $3);
+                                if (!recuperaVar(variables, $3)){
+                                    fprintf(stderr, "La variable %s no ha sido declarada\n", $3);
+                                }
                             }
                     ;
 expression          :   expression MAS expression
@@ -206,6 +225,7 @@ void yyerror(char const *msg) {
 int main(void) {
     yydebug=0; //Para que no salga el debug
     yyparse();
-    borrar(variables);
+    borrarTablaVar(variables);
+    borrarTablaCad(cadenas);
     return 0;
 }

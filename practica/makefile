@@ -1,5 +1,5 @@
-prueba: lex.yy.c sintactico.tab.c listaVar.c listaVar.h
-		gcc lex.yy.c sintactico.tab.c listaVar.c -lfl -o prueba
+prueba: lex.yy.c sintactico.tab.c tabla_sim.c tabla_sim.h codigo.c codigo.h
+		gcc lex.yy.c sintactico.tab.c tabla_sim.c codigo.c -lfl -o prueba
 
 lex.yy.c: lexico.l lexico.h
 		flex --yylineno lexico.l
@@ -13,5 +13,5 @@ clean:
 run: prueba prueba.txt
 		./prueba < prueba.txt
 
-MAC: lex.yy.c sintactico.tab.c listaVar.c listaVar.h
-		gcc lex.yy.c sintactico.tab.c listaVar.c -ll -o prueba
+MAC: lex.yy.c sintactico.tab.c tabla_sim.c tabla_sim.h codigo.c codigo.h
+		gcc lex.yy.c sintactico.tab.c tabla_sim.c codigo.c -ll -o prueba
