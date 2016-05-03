@@ -15,6 +15,7 @@
 %union {
     int entero;
     char *cadena;
+    codigo c;
 }
 
 %token PROGRAMA VAR ENTERO COMIENZO FIN SI ENTONCES SINO
@@ -25,6 +26,8 @@
 %token <entero> NUM
 %token <cadena> ID
 %token <cadena> CADENA
+
+%type <c> expression
 
 /* Prioridades de terminales de menos a mas */
 /* Y asociatividad izquierda */
@@ -181,6 +184,14 @@ read_list           :   ID
 expression          :   expression MAS expression
                             {
                                 printf("expression -> expression + expression\n");
+                                concatenarCodigo($1, $3);
+                                char * reg = obtenerReg();
+                                cuadrupla aux = crearCuadrupla("add", reg, obtenerTemp($1), obtenerTemp($3));
+                                $$ = $1;
+                                concatenarCuadrupla($$, aux);
+                                liberar_reg(obtenerTemp($1));
+                                liberar_reg(obtenerTemp($3));
+
                             }
                     |   expression MENOS expression
                             {
@@ -201,6 +212,7 @@ expression          :   expression MAS expression
                     |   PARI expression PARD
                             {
                                 printf("expression -> ( expression )\n");
+                                $$ = $2;
                             }
                     |   ID
                             {
@@ -208,10 +220,20 @@ expression          :   expression MAS expression
                                 if (!recuperaVar(variables, $1)){
                                     fprintf(stderr, "La variable %s no ha sido declarada\n", $1);
                                 }
+                                else {
+                                  char * reg = obtenerReg();
+                                  cuadrupla aux = crearCuadrupla("lw", reg, concatenaInt("", $1), NULL);
+                                  $$ = crearCodigo();
+                                  concatenarCuadrupla($$, aux);
+                                }
                             }
                     |   NUM
                             {
                                 printf("expression -> num [=%d]\n", $1);
+                                char * reg = obtenerReg();
+                                cuadrupla aux = crearCuadrupla("li", reg, concatenaInt("", $1), NULL);
+                                $$ = crearCodigo();
+                                concatenarCuadrupla($$, aux);
                             }
                     ;
 
