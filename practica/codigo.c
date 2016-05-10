@@ -107,11 +107,29 @@ char * obtenerTemp(codigo l){
     return l->resultado;
 }
 
+void imprimirCuadrupla(cuadrupla c) {
+    if (c->operacion[0] == '$' && c->operacion[1] == 'l') {
+        printf("%s:", c->operacion);
+    } else {
+        printf("\t%s", c->operacion);
+        if (c->resultado != NULL) {
+            printf(" %s", c->resultado);
+        }
+        if (c->argumento1 != NULL) {
+            printf(", %s", c->argumento1);
+        }
+        if (c->argumento2 != NULL) {
+            printf(", %s", c->argumento2);
+        }
+    }
+
+    printf("\n");
+}
 
 void imprimirCodigo(codigo l){
     cuadrupla aux = l->primera;
     while(aux != NULL){
-        printf("%s %s, %s, %s\n", aux->operacion, aux->resultado, aux->argumento1, aux->argumento2);
+        imprimirCuadrupla(aux);
         aux = aux->siguiente;
     }
 }

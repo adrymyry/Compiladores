@@ -1,5 +1,5 @@
 programa main ();
 var a: entero;
 comienzo
-  a:= 5+2*(3/4)
+ si (a) entonces imprimir "a"
 fin.

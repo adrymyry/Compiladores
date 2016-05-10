@@ -6,9 +6,10 @@
     void yyerror(char const *msg);
     extern int yylineno;
     extern int yylex();
-    int contador = 1;
+    int ncadenas = 1;
     tablaVar variables;
     tablaCad cadenas;
+    int netiquetas = 1;
 %}
 
 /* Definicion de tipos de datos para símbolos de la gramática */
@@ -28,6 +29,7 @@
 %token <cadena> CADENA
 
 %type <c> expression statement statement_list optional_statements compound_statement
+%type <c> read_list print_list print_item
 
 /* Prioridades de terminales de menos a mas */
 /* Y asociatividad izquierda */
@@ -43,9 +45,20 @@
 program             :   PROGRAMA ID PARI PARD PYC declarations compound_statement PUNTO
                             {
                                 //printf("program -> programa id [%s] (); declarations compound_statement .\n", $2);
+                                printf("##################\n");
+                                printf("# Seccion de datos\n");
+                                printf("\t.data\n\n");
                                 imprimirTablaCad(cadenas);
                                 imprimirTablaVar(variables);
-                                //imprimirCodigo($7);
+
+                                printf("###################\n");
+                                printf("# Seccion de codigo\n");
+                                printf("\t.text\n\n");
+                                printf("\t.global %s\n", $2);
+                                printf("%s:\n", $2);
+                                printf("\t# Aqui comienzan las instrucciones del programa\n");
+                                imprimirCodigo($7);
+                                free($2);
                             }
                     ;
 declarations        :   declarations VAR identifier_list DOSP type PYC
@@ -85,6 +98,7 @@ type                :   ENTERO
 compound_statement  :   COMIENZO optional_statements FIN
                             {
                                 /*printf("compound_statement -> comienzo optional_statements fin\n");*/
+                                $$ = $2;
                             }
                     |   error FIN
                             {
@@ -95,20 +109,25 @@ compound_statement  :   COMIENZO optional_statements FIN
 optional_statements :   statement_list
                             {
                                 /*printf("optional_statements -> statement_list\n");*/
+                                $$ = $1;
                             }
                     |
                             {
                                 /*printf("optional_statements -> lambda\n");*/
+                                $$ = crearCodigo();
                             }
                     ;
 
 statement_list      :   statement
                             {
                                 /*printf("statement_list -> statement\n");*/
+                                $$ = $1;
                             }
                     |   statement_list PYC statement
                             {
                                 /*printf("statement_list -> statement_list ; statement\n");*/
+                                concatenarCodigo($1, $3);
+                                $$ = $1;
                             }
                     ;
 
@@ -118,55 +137,112 @@ statement           :   ID ASSIGN expression
                                 char* aux = concatena("_", $1);
                                 if (!recuperaVar(variables, aux)){
                                     fprintf(stderr, "La variable %s no ha sido declarada\n", $1);
+                                    $$ = $3;// ? DUDA
+                                } else {
+                                    cuadrupla store = crearCuadrupla("sw", obtenerTemp($3), aux, NULL);
+                                    concatenarCuadrupla($3, store);
+                                    liberarReg(obtenerTemp($3));
+                                    $$ = $3;
                                 }
-                                imprimirCodigo($3);
                             }
                     |   compound_statement
                             {
                                 /*printf("statement -> compound_statement\n");*/
+                                $$ = $1;
                             }
                     |   SI expression ENTONCES statement SINO statement
                             {
                                 /*printf("statement -> si expression entonces statement si-no statement\n");*/
+                                char * etiqueta1 = concatenaInt("$l", netiquetas);
+                                char * etiqueta2 = concatenaInt("$l", netiquetas+1);
+                                netiquetas+=2;
+
+                                concatenarCuadrupla($2, crearCuadrupla("beqz", obtenerTemp($2), etiqueta1, NULL));
+                                concatenarCodigo($2, $4);
+                                concatenarCuadrupla($2, crearCuadrupla("b", etiqueta2, NULL, NULL));
+                                concatenarCuadrupla($2, crearCuadrupla(etiqueta1, NULL, NULL, NULL));
+                                concatenarCodigo($2, $6);
+                                concatenarCuadrupla($2, crearCuadrupla(etiqueta2, NULL, NULL, NULL));
+
+                                $$ = $2;
                             }
                     |   SI expression ENTONCES statement
                             {
                                 /*printf("statement -> si expression entonces statement\n");*/
+                                char * etiqueta = concatenaInt("$l", netiquetas);
+                                netiquetas++;
+
+                                concatenarCuadrupla($2, crearCuadrupla("beqz", obtenerTemp($2), etiqueta, NULL));
+                                concatenarCodigo($2, $4);
+                                concatenarCuadrupla($2, crearCuadrupla(etiqueta, NULL, NULL, NULL));
+                                $$ = $2;
                             }
                     |   MIENTRAS expression HACER statement
                             {
                                 /*printf("statement -> mientras expression hacer statement\n");*/
+                                char * etiqueta1 = concatenaInt("$l", netiquetas);
+                                char * etiqueta2 = concatenaInt("$l", netiquetas+1);
+                                netiquetas+=2;
+
+                                codigo mientras = crearCodigo();
+                                concatenarCuadrupla(mientras, crearCuadrupla(etiqueta1, NULL, NULL, NULL));
+                                concatenarCodigo(mientras, $2);
+                                concatenarCuadrupla(mientras, crearCuadrupla("beqz", obtenerTemp($2), etiqueta2, NULL));
+                                concatenarCodigo(mientras, $4);
+                                concatenarCuadrupla(mientras, crearCuadrupla("b", etiqueta1, NULL, NULL));
+                                concatenarCuadrupla(mientras, crearCuadrupla(etiqueta2, NULL, NULL, NULL));
+
+                                $$ = mientras;
                             }
                     |   IMPRIMIR print_list
                             {
                                 /*printf("statement -> imprimir print_list\n");*/
+                                $$ = $2;
                             }
                     |   LEER read_list
                             {
                                 /*printf("statement -> leer read_list\n");*/
+                                $$ = $2;
                             }
                     ;
 print_list          :   print_item
                             {
                                 /*printf("print_list -> print_item\n");*/
+                                $$ = $1;
                             }
                     |   print_list COMA print_item
                             {
                                 /*printf("print_list -> print_list , print_item\n");*/
+                                concatenarCodigo($1, $3);
+                                $$ = $1;
                             }
                     ;
 print_item          :   expression
                             {
                                 /*printf("print_item -> expression\n");*/
+                                codigo imprime = crearCodigo();
+                                concatenarCuadrupla(imprime, crearCuadrupla("move", "$a0", obtenerTemp($1), NULL));
+                                concatenarCuadrupla(imprime, crearCuadrupla("li", "$v0", concatenaInt("", 1), NULL));
+                                concatenarCuadrupla(imprime, crearCuadrupla("syscall", NULL, NULL, NULL));
+                                liberarReg(obtenerTemp($1));
+
+                                concatenarCodigo($1, imprime);
+                                $$ = $1;
                             }
                     |   CADENA
                             {
                                 /*printf("print_item -> cadena [%s]\n", $1);*/
-                                char * aux = concatenaInt("$str", contador);
+                                char * aux = concatenaInt("$str", ncadenas);
                                 cadenas = crearCad(cadenas, &aux, $1);
-                                if (!strcmp(concatenaInt("$str", contador), aux)) {
-                                    contador++;
+                                if (!strcmp(concatenaInt("$str", ncadenas), aux)) {
+                                    ncadenas++;
                                 }
+                                codigo imprime = crearCodigo();
+                                concatenarCuadrupla(imprime, crearCuadrupla("la", "$a0", aux, NULL));
+                                concatenarCuadrupla(imprime, crearCuadrupla("li", "$v0", concatenaInt("", 4), NULL));
+                                concatenarCuadrupla(imprime, crearCuadrupla("syscall", NULL, NULL, NULL));
+
+                                $$ = imprime;
                             }
                     ;
 read_list           :   ID
@@ -175,6 +251,14 @@ read_list           :   ID
                                 char* aux = concatena("_", $1);
                                 if (!recuperaVar(variables, aux)){
                                     fprintf(stderr, "La variable %s no ha sido declarada\n", $1);
+                                    $$ = crearCodigo();
+                                } else {
+                                    codigo lee = crearCodigo();
+                                    concatenarCuadrupla(lee, crearCuadrupla("li", "$v0", concatenaInt("", 5), NULL));
+                                    concatenarCuadrupla(lee, crearCuadrupla("syscall", NULL, NULL, NULL));
+                                    concatenarCuadrupla(lee, crearCuadrupla("sw", "$v0", aux, NULL));
+
+                                    $$ = lee;
                                 }
                             }
                     |   read_list COMA ID
@@ -183,6 +267,15 @@ read_list           :   ID
                                 char* aux = concatena("_", $3);
                                 if (!recuperaVar(variables, aux)){
                                     fprintf(stderr, "La variable %s no ha sido declarada\n", $3);
+                                    $$ = $1;
+                                } else {
+                                    codigo lee = crearCodigo();
+                                    concatenarCuadrupla(lee, crearCuadrupla("li", "$v0", concatenaInt("", 5), NULL));
+                                    concatenarCuadrupla(lee, crearCuadrupla("syscall", NULL, NULL, NULL));
+                                    concatenarCuadrupla(lee, crearCuadrupla("sw", "$v0", aux, NULL));
+
+                                    concatenarCodigo($1, lee);
+                                    $$ = $1;
                                 }
                             }
                     ;
@@ -245,13 +338,13 @@ expression          :   expression MAS expression
                     |   ID
                             {
                                 /*printf("expression -> id [%s]\n", $1);*/
-                                char* aux = concatena("_", $1);
-                                if (!recuperaVar(variables, aux)){
+                                char* iden = concatena("_", $1);
+                                if (!recuperaVar(variables, iden)){
                                     fprintf(stderr, "La variable %s no ha sido declarada\n", $1);
                                 }
                                 else {
                                   char * reg = obtenerReg();
-                                  cuadrupla aux = crearCuadrupla("lw", reg, $1, NULL);
+                                  cuadrupla aux = crearCuadrupla("lw", reg, iden, NULL);
                                   $$ = crearCodigo();
                                   concatenarCuadrupla($$, aux);
                                 }

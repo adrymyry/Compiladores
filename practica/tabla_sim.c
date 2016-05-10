@@ -129,7 +129,6 @@ void imprimirTablaCadAux(tablaCad t) {
 
 void imprimirTablaCad(tablaCad t){
     if (t!=NULL) {
-        printf("\t.data\n\n");
         printf("#Cadenas del programa\n");
         imprimirTablaCadAux(t);
     }
