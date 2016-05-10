@@ -128,10 +128,12 @@ void imprimirTablaCadAux(tablaCad t) {
 }
 
 void imprimirTablaCad(tablaCad t){
-    printf("\t.data\n\n");
-    printf("#Cadenas del programa\n");
+    if (t!=NULL) {
+        printf("\t.data\n\n");
+        printf("#Cadenas del programa\n");
+        imprimirTablaCadAux(t);
+    }
 
-    imprimirTablaCadAux(t);
     // while(t != NULL){
     //     printf("%s:\n\t.asciiz %s\n", t->nombre, t->contenido);
     //     t = t->sig;

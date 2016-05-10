@@ -189,47 +189,46 @@ read_list           :   ID
 expression          :   expression MAS expression
                             {
                                 /*printf("expression -> expression + expression\n");*/
-                                concatenarCodigo($1, $3);
                                 char * reg = obtenerReg();
                                 cuadrupla aux = crearCuadrupla("add", reg, obtenerTemp($1), obtenerTemp($3));
-                                $$ = $1;
-                                concatenarCuadrupla($$, aux);
                                 liberarReg(obtenerTemp($1));
                                 liberarReg(obtenerTemp($3));
-
+                                concatenarCodigo($1, $3);
+                                concatenarCuadrupla($1, aux);
+                                $$ = $1;
                             }
                     |   expression MENOS expression
                             {
                                 /*printf("expression -> expression - expression\n");*/
-                                concatenarCodigo($1, $3);
                                 char * reg = obtenerReg();
                                 cuadrupla aux = crearCuadrupla("sub", reg, obtenerTemp($1), obtenerTemp($3));
-                                $$ = $1;
-                                concatenarCuadrupla($$, aux);
                                 liberarReg(obtenerTemp($1));
                                 liberarReg(obtenerTemp($3));
+                                concatenarCodigo($1, $3);
+                                concatenarCuadrupla($1, aux);
+                                $$ = $1;
                             }
                     |   expression MULT expression
                             {
                                 /*printf("expression -> expression * expression\n");*/
-                                concatenarCodigo($1, $3);
                                 char * reg = obtenerReg();
                                 cuadrupla aux = crearCuadrupla("mult", reg, obtenerTemp($1), obtenerTemp($3));
-                                $$ = $1;
-                                concatenarCuadrupla($$, aux);
                                 liberarReg(obtenerTemp($1));
                                 liberarReg(obtenerTemp($3));
+                                concatenarCodigo($1, $3);
+                                concatenarCuadrupla($1, aux);
+                                $$ = $1;
                             }
                     |   expression DIV expression
                             {
                                 /*printf("expression -> expression / expression\n");*/
-                                concatenarCodigo($1, $3);
                                 char * reg = obtenerReg();
                                 cuadrupla aux = crearCuadrupla("div", reg, obtenerTemp($1), obtenerTemp($3));
-                                $$ = $1;
-                                concatenarCuadrupla($$, aux);
                                 liberarReg(obtenerTemp($1));
                                 liberarReg(obtenerTemp($3));
+                                concatenarCodigo($1, $3);
+                                concatenarCuadrupla($1, aux);
+                                $$ = $1;
                             }
                     |   MENOS expression %prec UMENOS
                             {
