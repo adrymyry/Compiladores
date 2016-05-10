@@ -1,4 +1,5 @@
 %{
+	#include "codigo.h"
 	#include "sintactico.tab.h"
 	#include <string.h>
 	int inicio_comentario = 0;

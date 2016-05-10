@@ -86,7 +86,7 @@ codigo concatenarCodigo(codigo l1, codigo l2){
 }
 
 // Obtener registro libre
-char * obtener_reg(){
+char * obtenerReg(){
     for (int i = 0; i < 10; i++) {
         if (!registros[i]) {
             registros[i] = 1;
@@ -97,7 +97,7 @@ char * obtener_reg(){
     exit(3);
 }
 
-void liberar_reg(char *r){
+void liberarReg(char *r){
     int reg = r[2]-'0';
     registros[reg] = 0;
 }

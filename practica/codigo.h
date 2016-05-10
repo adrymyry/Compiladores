@@ -17,8 +17,8 @@ codigo concatenarCuadrupla(codigo l, cuadrupla c);
 codigo concatenarCodigo(codigo l1, codigo l2);
 
 // Obtener registro libre
-char * obtener_reg();
-void liberar_reg(char *r);
+char * obtenerReg();
+void liberarReg(char *r);
 
 // Obtener registro temporal de codigo
 char * obtenerTemp(codigo l);
