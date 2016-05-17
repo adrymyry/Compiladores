@@ -56,8 +56,8 @@ program             :   PROGRAMA ID PARI PARD PYC declarations compound_statemen
                                 printf("###################\n");
                                 printf("# Seccion de codigo\n");
                                 printf("\t.text\n\n");
-                                printf("\t.global %s\n", $2);
-                                printf("%s:\n", $2);
+                                printf("\t.globl main\n");
+                                printf("main:\n");
                                 printf("\t# Aqui comienzan las instrucciones del programa\n");
                                 imprimirCodigo($7);
                                 // Liberar codigo
@@ -235,7 +235,7 @@ statement           :   ID ASSIGN expression
                                 concatenarCuadrupla(para, crearCuadrupla(etiqueta1, NULL,NULL,NULL));
                                 // Condicion;
                                 concatenarCodigo(para, $7);
-                                cuadrupla aux = crearCuadrupla("sub", obtenerTemp($5), obtenerTemp($7), obtenerTemp($5));
+                                concatenarCuadrupla(para, crearCuadrupla("sle", obtenerTemp($5), obtenerTemp($5), obtenerTemp($7)));
                                 liberarReg(obtenerTemp($7));
                                 concatenarCuadrupla(para, crearCuadrupla("beqz", obtenerTemp($5), etiqueta2, NULL));
                                 liberarReg(obtenerTemp($5));
@@ -243,9 +243,11 @@ statement           :   ID ASSIGN expression
                                 concatenarCodigo(para, $12);
                                 // Actualizacion
                                 concatenarCodigo(para, $9);
-                                cuadrupla store = crearCuadrupla("sw", obtenerTemp($9), id, NULL);
-                                concatenarCuadrupla(para, store);
+                                concatenarCuadrupla(para, crearCuadrupla("lw", obtenerReg(), id, NULL));
+                                concatenarCuadrupla(para, crearCuadrupla("add", obtenerTemp(para), obtenerTemp(para), obtenerTemp($9)));
+                                concatenarCuadrupla(para, crearCuadrupla("sw", obtenerTemp(para), id, NULL));
                                 liberarReg(obtenerTemp($9));
+                                liberarReg(obtenerTemp(para));
                                 // Continuar
                                 concatenarCuadrupla(para, crearCuadrupla("b", etiqueta1, NULL, NULL));
                                 concatenarCuadrupla(para, crearCuadrupla(etiqueta2, NULL, NULL, NULL));
