@@ -85,7 +85,8 @@ void concatenarCodigo(codigo l1, codigo l2){
 
 // Obtener registro libre
 char * obtenerReg(){
-    for (int i = 0; i < 10; i++) {
+    int i;
+    for (i = 0; i < 10; i++) {
         if (!registros[i]) {
             registros[i] = 1;
             return concatenaInt("$t", i);
