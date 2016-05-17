@@ -12,9 +12,9 @@ typedef struct codigo *codigo;
 cuadrupla crearCuadrupla(char *op, char* res, char* arg1, char* arg2);
 codigo crearCodigo();
 // Añadir cuadrupla al final
-codigo concatenarCuadrupla(codigo l, cuadrupla c);
+void concatenarCuadrupla(codigo l, cuadrupla c);
 // Concatenar listas
-codigo concatenarCodigo(codigo l1, codigo l2);
+void concatenarCodigo(codigo l1, codigo l2);
 
 // Obtener registro libre
 char * obtenerReg();

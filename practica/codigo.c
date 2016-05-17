@@ -58,7 +58,7 @@ codigo crearCodigo() {
     return nuevo;
 }
 
-codigo concatenarCuadrupla(codigo l, cuadrupla c){
+void concatenarCuadrupla(codigo l, cuadrupla c){
     if (l->primera == NULL) {
         l->primera = c;
         l->ultima = c;
@@ -68,20 +68,18 @@ codigo concatenarCuadrupla(codigo l, cuadrupla c){
         l->ultima = c;
         l->resultado = c->resultado;
     }
-    return l;
 }
 
 // Concatenar listas
-codigo concatenarCodigo(codigo l1, codigo l2){
+void concatenarCodigo(codigo l1, codigo l2){
     if (l1->primera == NULL) {
-        return l2;
-    } else if (l2->primera == NULL) {
-        return l1;
-    } else {
+        l1->primera = l2->primera;
+        l1->ultima = l2->ultima;
+        l1->resultado = l2->resultado;
+    } else if (l2->primera != NULL) {
         l1->ultima->siguiente = l2->primera;
         l1->ultima = l2->ultima;
         l1->resultado = l2->resultado;
-        return l1;
     }
 }
 

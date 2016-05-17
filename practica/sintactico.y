@@ -2,9 +2,11 @@
     #include "tabla_sim.h"
     #include "codigo.h"
     #include <stdio.h>
+    #include <stdlib.h>
     #include <string.h>
     void yyerror(char const *msg);
     extern int yylineno;
+    extern FILE *yyin;
     extern int yylex();
     int ncadenas = 1;
     tablaVar variables;
@@ -21,7 +23,7 @@
 
 %token PROGRAMA VAR ENTERO COMIENZO FIN SI ENTONCES SINO
 %token MIENTRAS HACER IMPRIMIR LEER PYC DOSP PUNTO COMA
-%token MAS MENOS MULT PARI PARD DIV ASSIGN
+%token MAS MENOS MULT PARI PARD DIV ASSIGN PARA
 
 /* Tokens asociados a tipos de datos */
 %token <entero> NUM
@@ -58,6 +60,7 @@ program             :   PROGRAMA ID PARI PARD PYC declarations compound_statemen
                                 printf("%s:\n", $2);
                                 printf("\t# Aqui comienzan las instrucciones del programa\n");
                                 imprimirCodigo($7);
+                                // Liberar codigo
                                 free($2);
                             }
                     ;
@@ -158,6 +161,7 @@ statement           :   ID ASSIGN expression
                                 netiquetas+=2;
 
                                 concatenarCuadrupla($2, crearCuadrupla("beqz", obtenerTemp($2), etiqueta1, NULL));
+                                liberarReg(obtenerTemp($2));
                                 concatenarCodigo($2, $4);
                                 concatenarCuadrupla($2, crearCuadrupla("b", etiqueta2, NULL, NULL));
                                 concatenarCuadrupla($2, crearCuadrupla(etiqueta1, NULL, NULL, NULL));
@@ -173,6 +177,7 @@ statement           :   ID ASSIGN expression
                                 netiquetas++;
 
                                 concatenarCuadrupla($2, crearCuadrupla("beqz", obtenerTemp($2), etiqueta, NULL));
+                                liberarReg(obtenerTemp($2));
                                 concatenarCodigo($2, $4);
                                 concatenarCuadrupla($2, crearCuadrupla(etiqueta, NULL, NULL, NULL));
                                 $$ = $2;
@@ -188,11 +193,64 @@ statement           :   ID ASSIGN expression
                                 concatenarCuadrupla(mientras, crearCuadrupla(etiqueta1, NULL, NULL, NULL));
                                 concatenarCodigo(mientras, $2);
                                 concatenarCuadrupla(mientras, crearCuadrupla("beqz", obtenerTemp($2), etiqueta2, NULL));
+                                liberarReg(obtenerTemp($2));
                                 concatenarCodigo(mientras, $4);
                                 concatenarCuadrupla(mientras, crearCuadrupla("b", etiqueta1, NULL, NULL));
                                 concatenarCuadrupla(mientras, crearCuadrupla(etiqueta2, NULL, NULL, NULL));
 
                                 $$ = mientras;
+                            }
+                    |   HACER statement MIENTRAS expression
+                            {
+                                char * etiqueta1 = concatenaInt("$l", netiquetas);
+                                netiquetas++;
+
+                                codigo hacer = crearCodigo();
+                                concatenarCuadrupla(hacer, crearCuadrupla(etiqueta1, NULL,NULL,NULL));
+                                concatenarCodigo(hacer, $2);
+                                concatenarCodigo(hacer, $4);
+                                concatenarCuadrupla(hacer, crearCuadrupla("bnez", obtenerTemp($4), etiqueta1, NULL));
+                                liberarReg(obtenerTemp($4));
+
+                                $$ = hacer;
+                            }
+                    |   PARA PARI ID ASSIGN expression PYC expression PYC expression PARD HACER statement
+                            {
+                                char * etiqueta1 = concatenaInt("$l", netiquetas);
+                                char * etiqueta2 = concatenaInt("$l", netiquetas+1);
+                                char * etiqueta3 = concatenaInt("$l", netiquetas+2);
+                                netiquetas+=3;
+
+                                codigo para = crearCodigo();
+                                // Inicializar
+                                char* id = concatena("_", $3);
+                                if (!recuperaVar(variables, id)){
+                                    fprintf(stderr, "La variable %s no ha sido declarada\n", $3);
+                                } else {
+                                    //concatenarCuadrupla(para, crearCuadrupla("HOLAA", NULL, NULL, NULL));
+                                    concatenarCodigo(para, $5);
+                                    cuadrupla store = crearCuadrupla("sw", obtenerTemp($5), id, NULL);
+                                    concatenarCuadrupla(para, store);
+                                }
+                                concatenarCuadrupla(para, crearCuadrupla(etiqueta1, NULL,NULL,NULL));
+                                // Condicion;
+                                concatenarCodigo(para, $7);
+                                cuadrupla aux = crearCuadrupla("sub", obtenerTemp($5), obtenerTemp($7), obtenerTemp($5));
+                                liberarReg(obtenerTemp($7));
+                                concatenarCuadrupla(para, crearCuadrupla("beqz", obtenerTemp($5), etiqueta2, NULL));
+                                liberarReg(obtenerTemp($5));
+                                // Cuerpo for
+                                concatenarCodigo(para, $12);
+                                // Actualizacion
+                                concatenarCodigo(para, $9);
+                                cuadrupla store = crearCuadrupla("sw", obtenerTemp($9), id, NULL);
+                                concatenarCuadrupla(para, store);
+                                liberarReg(obtenerTemp($9));
+                                // Continuar
+                                concatenarCuadrupla(para, crearCuadrupla("b", etiqueta1, NULL, NULL));
+                                concatenarCuadrupla(para, crearCuadrupla(etiqueta2, NULL, NULL, NULL));
+                                $$ = para;
+
                             }
                     |   IMPRIMIR print_list
                             {
@@ -366,9 +424,24 @@ void yyerror(char const *msg) {
     fprintf(stderr, "Error sintáctico (linea %d): %s\n", yylineno, msg);
 }
 
-int main(void) {
+int main(int argc, char const *argv[]) {
+
+    if (argc != 2) {
+        printf("Uso: %s fichero\n", argv[0]);
+        exit(1);
+    }
+
+    FILE *f_in = fopen(argv[1], "r");
+    if (f_in == NULL) {
+        printf("Archivo %s no existe\n", argv[1]);
+        exit(2);
+    }
+
     yydebug=0; //Para que no salga el debug
+    yyin = f_in;
     yyparse();
+
+    fclose(f_in);
     borrarTablaVar(variables);
     borrarTablaCad(cadenas);
     return 0;
