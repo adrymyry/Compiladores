@@ -97,8 +97,10 @@ char * obtenerReg(){
 }
 
 void liberarReg(char *r){
-    int reg = r[2]-'0';
-    registros[reg] = 0;
+    if (r!=NULL){
+        int reg = r[2]-'0';
+        registros[reg] = 0;
+    }
 }
 
 // Obtener registro temporal de codigo

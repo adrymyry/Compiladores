@@ -29,6 +29,7 @@ hacer 										{ return HACER; }
 imprimir 									{ return IMPRIMIR; }
 leer 										{ return LEER; }
 para										{ return PARA;}
+not											{ return NOT; }
 
 ({L}|_)({L}|_|{D}){0,15}	{ yylval.cadena = strdup(yytext);
 														return ID;
@@ -59,6 +60,9 @@ para										{ return PARA;}
 ")"	 											{ return PARD; }
 "/"	 											{ return DIV; }
 :=	 											{ return ASSIGN; }
+"<"												{ return MENOR; }
+">"												{ return MAYOR; }
+"="												{ return IGUAL;	}
 
 
 "//"{C}*\n								{ }
@@ -72,6 +76,6 @@ para										{ return PARA;}
  								  					return 0; }
 <comentario>"*)" 					{ BEGIN(0); }
 
-[^a-zA-ZñÑáéíóúüÁÉÍÓÚÜ0-9(),+\-_\*\.; \n\t\r"/]+	{ printf("Error léxico en %d: %s\n", yylineno, yytext); }
+[^a-zA-ZñÑáéíóúüÁÉÍÓÚÜ0-9(),+\-_\*\.;<>= \n\t\r"/]+	{ printf("Error léxico en %d: %s\n", yylineno, yytext); }
 
 %%

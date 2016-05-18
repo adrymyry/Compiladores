@@ -12,6 +12,7 @@
     tablaVar variables;
     tablaCad cadenas;
     int netiquetas = 1;
+    int errores = 0;
 %}
 
 /* Definicion de tipos de datos para símbolos de la gramática */
@@ -23,7 +24,8 @@
 
 %token PROGRAMA VAR ENTERO COMIENZO FIN SI ENTONCES SINO
 %token MIENTRAS HACER IMPRIMIR LEER PYC DOSP PUNTO COMA
-%token MAS MENOS MULT PARI PARD DIV ASSIGN PARA
+%token MAS MENOS MULT PARI PARD DIV ASSIGN
+%token PARA MENOR MAYOR IGUAL NOT
 
 /* Tokens asociados a tipos de datos */
 %token <entero> NUM
@@ -35,11 +37,13 @@
 
 /* Prioridades de terminales de menos a mas */
 /* Y asociatividad izquierda */
+
+%left MENOR IGUAL MAYOR
 %left MAS MENOS
 %left MULT DIV
 %left UMENOS
 
-%expect 2
+%expect 9
 
 
 %%
@@ -47,21 +51,25 @@
 program             :   PROGRAMA ID PARI PARD PYC declarations compound_statement PUNTO
                             {
                                 //printf("program -> programa id [%s] (); declarations compound_statement .\n", $2);
-                                printf("##################\n");
-                                printf("# Seccion de datos\n");
-                                printf("\t.data\n\n");
-                                imprimirTablaCad(cadenas);
-                                imprimirTablaVar(variables);
-
-                                printf("###################\n");
-                                printf("# Seccion de codigo\n");
-                                printf("\t.text\n\n");
-                                printf("\t.globl main\n");
-                                printf("main:\n");
-                                printf("\t# Aqui comienzan las instrucciones del programa\n");
-                                imprimirCodigo($7);
-                                // Liberar codigo
-                                free($2);
+                                if (!errores){
+                                    printf("##################\n");
+                                    printf("# Seccion de datos\n");
+                                    printf("\t.data\n\n");
+                                    imprimirTablaCad(cadenas);
+                                    imprimirTablaVar(variables);
+    
+                                    printf("###################\n");
+                                    printf("# Seccion de codigo\n");
+                                    printf("\t.text\n\n");
+                                    printf("\t.globl main\n");
+                                    printf("main:\n");
+                                    printf("\t# Aqui comienzan las instrucciones del programa\n");
+                                    imprimirCodigo($7);
+                                    // Liberar codigo
+                                    free($2);
+                                }
+                                
+                                
                             }
                     ;
 declarations        :   declarations VAR identifier_list DOSP type PYC
@@ -70,7 +78,8 @@ declarations        :   declarations VAR identifier_list DOSP type PYC
                             }
                     |   error PYC
                             {
-                                fprintf(stderr, "Error sintáctico en declaración de variables.\n");
+                                fprintf(stderr, "\tError sintáctico en declaración de variables.\n");
+                                errores++;
                             }
                     |
                             {
@@ -105,7 +114,8 @@ compound_statement  :   COMIENZO optional_statements FIN
                             }
                     |   error FIN
                             {
-                                fprintf(stderr, "Error sintáctico en bloque de sentecias\n");
+                                fprintf(stderr, "\tError sintáctico en bloque de sentencias \n");
+                                errores++;
                             }
                     ;
 
@@ -139,7 +149,7 @@ statement           :   ID ASSIGN expression
                                 /*printf("statement -> id [%s] := expression\n", $1);*/
                                 char* aux = concatena("_", $1);
                                 if (!recuperaVar(variables, aux)){
-                                    fprintf(stderr, "La variable %s no ha sido declarada\n", $1);
+                                    fprintf(stderr, "La variable %s no ha sido declarada (linea %d)\n", $1, yylineno);
                                     $$ = $3;// ? DUDA
                                 } else {
                                     cuadrupla store = crearCuadrupla("sw", obtenerTemp($3), aux, NULL);
@@ -225,7 +235,8 @@ statement           :   ID ASSIGN expression
                                 // Inicializar
                                 char* id = concatena("_", $3);
                                 if (!recuperaVar(variables, id)){
-                                    fprintf(stderr, "La variable %s no ha sido declarada\n", $3);
+                                    fprintf(stderr, "La variable %s no ha sido declarada (línea %d)\n", $3, yylineno);
+                                    errores;
                                 } else {
                                     //concatenarCuadrupla(para, crearCuadrupla("HOLAA", NULL, NULL, NULL));
                                     concatenarCodigo(para, $5);
@@ -310,8 +321,9 @@ read_list           :   ID
                                 /*printf("read_list-> id [%s]\n", $1);*/
                                 char* aux = concatena("_", $1);
                                 if (!recuperaVar(variables, aux)){
-                                    fprintf(stderr, "La variable %s no ha sido declarada\n", $1);
+                                    fprintf(stderr, "La variable %s no ha sido declarada (línea %d)\n", $1, yylineno);
                                     $$ = crearCodigo();
+                                    errores++;
                                 } else {
                                     codigo lee = crearCodigo();
                                     concatenarCuadrupla(lee, crearCuadrupla("li", "$v0", concatenaInt("", 5), NULL));
@@ -326,8 +338,9 @@ read_list           :   ID
                                 /*printf("read_list-> read_list , id [%s]\n", $3);*/
                                 char* aux = concatena("_", $3);
                                 if (!recuperaVar(variables, aux)){
-                                    fprintf(stderr, "La variable %s no ha sido declarada\n", $3);
+                                    fprintf(stderr, "La variable %s no ha sido declarada (línea %d)\n", $3, yylineno);
                                     $$ = $1;
+                                    errores++;
                                 } else {
                                     codigo lee = crearCodigo();
                                     concatenarCuadrupla(lee, crearCuadrupla("li", "$v0", concatenaInt("", 5), NULL));
@@ -395,12 +408,87 @@ expression          :   expression MAS expression
                                 /*printf("expression -> ( expression )\n");*/
                                 $$ = $2;
                             }
+                    |   expression IGUAL expression
+                            {
+                                // seq
+                                char * reg = obtenerReg();
+                                cuadrupla aux = crearCuadrupla("seq", reg, obtenerTemp($1), obtenerTemp($3));
+                                liberarReg(obtenerTemp($1));
+                                liberarReg(obtenerTemp($3));
+                                concatenarCodigo($1, $3);
+                                concatenarCuadrupla($1, aux);
+                                $$ = $1;
+                            }
+                    |   expression MENOR MAYOR expression
+                            {
+                                // sne
+                                char * reg = obtenerReg();
+                                cuadrupla aux = crearCuadrupla("sne", reg, obtenerTemp($1), obtenerTemp($4));
+                                liberarReg(obtenerTemp($1));
+                                liberarReg(obtenerTemp($4));
+                                concatenarCodigo($1, $4);
+                                concatenarCuadrupla($1, aux);
+                                $$ = $1;
+                            }
+                    |   expression MAYOR expression
+                            {
+                                // sgt
+                                char * reg = obtenerReg();
+                                cuadrupla aux = crearCuadrupla("sgt", reg, obtenerTemp($1), obtenerTemp($3));
+                                liberarReg(obtenerTemp($1));
+                                liberarReg(obtenerTemp($3));
+                                concatenarCodigo($1, $3);
+                                concatenarCuadrupla($1, aux);
+                                $$ = $1;
+                            }
+                    |   expression MENOR expression
+                            {
+                                // slt
+                                char * reg = obtenerReg();
+                                cuadrupla aux = crearCuadrupla("slt", reg, obtenerTemp($1), obtenerTemp($3));
+                                liberarReg(obtenerTemp($1));
+                                liberarReg(obtenerTemp($3));
+                                concatenarCodigo($1, $3);
+                                concatenarCuadrupla($1, aux);
+                                $$ = $1;
+                            }
+                    |   expression MAYOR IGUAL expression
+                            {
+                                // sge
+                                char * reg = obtenerReg();
+                                cuadrupla aux = crearCuadrupla("sge", reg, obtenerTemp($1), obtenerTemp($4));
+                                liberarReg(obtenerTemp($1));
+                                liberarReg(obtenerTemp($4));
+                                concatenarCodigo($1, $4);
+                                concatenarCuadrupla($1, aux);
+                                $$ = $1;
+                            }
+                    |   expression MENOR IGUAL expression
+                            {
+                                // sle
+                                char * reg = obtenerReg();
+                                cuadrupla aux = crearCuadrupla("sle", reg, obtenerTemp($1), obtenerTemp($4));
+                                liberarReg(obtenerTemp($1));
+                                liberarReg(obtenerTemp($4));
+                                concatenarCodigo($1, $4);
+                                concatenarCuadrupla($1, aux);
+                                $$ = $1;
+                            }
+                    |   NOT expression
+                            {
+                                cuadrupla aux = crearCuadrupla("nor", obtenerTemp($2), obtenerTemp($2), "0");
+                                $$ = $2;
+                                concatenarCuadrupla($$, aux);
+                            }
+                    
                     |   ID
                             {
                                 /*printf("expression -> id [%s]\n", $1);*/
                                 char* iden = concatena("_", $1);
                                 if (!recuperaVar(variables, iden)){
-                                    fprintf(stderr, "La variable %s no ha sido declarada\n", $1);
+                                    fprintf(stderr, "La variable %s no ha sido declarada (línea %d)\n", $1, yylineno);
+                                    $$ = crearCodigo();
+                                    errores++;
                                 }
                                 else {
                                   char * reg = obtenerReg();
@@ -424,6 +512,7 @@ expression          :   expression MAS expression
 /* Tratamiento de errores */
 void yyerror(char const *msg) {
     fprintf(stderr, "Error sintáctico (linea %d): %s\n", yylineno, msg);
+    errores++;
 }
 
 int main(int argc, char const *argv[]) {
