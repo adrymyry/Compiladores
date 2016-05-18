@@ -10,7 +10,7 @@ sintactico.tab.c sintactico.tab.h : sintactico.y
 		bison -d -v -t sintactico.y
 
 clean:
-		rm -f prueba lex.yy.c sintactico.tab.*
+		rm -rf prueba lex.yy.c sintactico.tab.* *.dSYM
 
 run: prueba prueba.txt
 		./prueba prueba.txt
