@@ -67,6 +67,7 @@ program             :   PROGRAMA ID PARI PARD PYC declarations compound_statemen
                                     imprimirCodigo($7);
                                     // Liberar codigo
                                     free($2);
+                                    liberarCodigo($7);
                                 }
 
 
@@ -88,6 +89,7 @@ declarations        :   declarations VAR identifier_list DOSP type PYC
                             }
                     |
                             {
+                                
                                 //printf("declarations -> lambda\n");
                             }
                     ;

@@ -134,3 +134,19 @@ void imprimirCodigo(codigo l){
         aux = aux->siguiente;
     }
 }
+
+void liberarCuadrupla(cuadrupla c){
+    free(c->operacion);
+    free(c->resultado);
+    free(c->argumento1);
+    free(c->argumento2);
+}
+
+void liberarCodigo(codigo l){
+    cuadrupla aux = l->primera;
+    while(aux != NULL){
+        l->primera = aux->siguiente;
+        liberarCuadrupla(aux);
+    }
+    free(l->resultado);
+}
