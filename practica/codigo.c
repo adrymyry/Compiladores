@@ -136,17 +136,28 @@ void imprimirCodigo(codigo l){
 }
 
 void liberarCuadrupla(cuadrupla c){
-    free(c->operacion);
-    free(c->resultado);
-    free(c->argumento1);
-    free(c->argumento2);
+    if (c->operacion != NULL && !strcmp(c->operacion, "")) {
+        free(c->operacion);
+    }
+    if (c->resultado != NULL && !strcmp(c->resultado, "")) {
+        free(c->resultado);
+    }
+    if (c->argumento1 != NULL && !strcmp(c->argumento1, "")) {
+        free(c->argumento1);
+    }
+    if (c->argumento2 != NULL && !strcmp(c->argumento2, "")) {
+        free(c->argumento2);
+    }
 }
 
 void liberarCodigo(codigo l){
+    cuadrupla borrar = l->primera;
     cuadrupla aux = l->primera;
     while(aux != NULL){
-        l->primera = aux->siguiente;
-        liberarCuadrupla(aux);
+        aux = aux->siguiente;
+        liberarCuadrupla(borrar);
+        free(borrar);
+        borrar = aux;
     }
-    free(l->resultado);
+    //free(l->resultado);
 }

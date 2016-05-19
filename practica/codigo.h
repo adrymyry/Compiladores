@@ -24,4 +24,6 @@ void liberarReg(char *r);
 char * obtenerTemp(codigo l);
 void imprimirCodigo(codigo l);
 
+void liberarCodigo(codigo l);
+
 #endif
