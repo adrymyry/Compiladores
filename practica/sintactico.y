@@ -57,7 +57,7 @@ program             :   PROGRAMA ID PARI PARD PYC declarations compound_statemen
                                     printf("\t.data\n\n");
                                     imprimirTablaCad(cadenas);
                                     imprimirTablaVar(variables);
-    
+
                                     printf("###################\n");
                                     printf("# Seccion de codigo\n");
                                     printf("\t.text\n\n");
@@ -68,8 +68,13 @@ program             :   PROGRAMA ID PARI PARD PYC declarations compound_statemen
                                     // Liberar codigo
                                     free($2);
                                 }
-                                
-                                
+
+
+                            }
+                    |   PROGRAMA ID PARI PARD PYC declarations compound_statement
+                            {
+                              fprintf(stderr, "\tError sintáctico. Falta el punto final\n");
+                              errores++;
                             }
                     ;
 declarations        :   declarations VAR identifier_list DOSP type PYC
@@ -136,15 +141,15 @@ statement_list      :   statement
                                 /*printf("statement_list -> statement\n");*/
                                 $$ = $1;
                             }
-                    |   statement_list PYC statement
+                    |   statement_list statement
                             {
                                 /*printf("statement_list -> statement_list ; statement\n");*/
-                                concatenarCodigo($1, $3);
+                                concatenarCodigo($1, $2);
                                 $$ = $1;
                             }
                     ;
 
-statement           :   ID ASSIGN expression
+statement           :   ID ASSIGN expression PYC
                             {
                                 /*printf("statement -> id [%s] := expression\n", $1);*/
                                 char* aux = concatena("_", $1);
@@ -158,7 +163,7 @@ statement           :   ID ASSIGN expression
                                     $$ = $3;
                                 }
                             }
-                    |   compound_statement
+                    |   compound_statement PYC
                             {
                                 /*printf("statement -> compound_statement\n");*/
                                 $$ = $1;
@@ -210,7 +215,7 @@ statement           :   ID ASSIGN expression
 
                                 $$ = mientras;
                             }
-                    |   HACER statement MIENTRAS expression
+                    |   HACER statement MIENTRAS expression PYC
                             {
                                 char * etiqueta1 = concatenaInt("$l", netiquetas);
                                 netiquetas++;
@@ -236,7 +241,7 @@ statement           :   ID ASSIGN expression
                                 char* id = concatena("_", $3);
                                 if (!recuperaVar(variables, id)){
                                     fprintf(stderr, "La variable %s no ha sido declarada (línea %d)\n", $3, yylineno);
-                                    errores;
+                                    errores++;
                                 } else {
                                     //concatenarCuadrupla(para, crearCuadrupla("HOLAA", NULL, NULL, NULL));
                                     concatenarCodigo(para, $5);
@@ -265,15 +270,21 @@ statement           :   ID ASSIGN expression
                                 $$ = para;
 
                             }
-                    |   IMPRIMIR print_list
+                    |   IMPRIMIR print_list PYC
                             {
                                 /*printf("statement -> imprimir print_list\n");*/
                                 $$ = $2;
                             }
-                    |   LEER read_list
+                    |   LEER read_list PYC
                             {
                                 /*printf("statement -> leer read_list\n");*/
                                 $$ = $2;
+                            }
+                    |   error PYC
+                            {
+                                fprintf(stderr, "\tError sintáctico en sentencia.\n");
+                                errores++;
+                                $$ = crearCodigo();
                             }
                     ;
 print_list          :   print_item
@@ -480,7 +491,7 @@ expression          :   expression MAS expression
                                 $$ = $2;
                                 concatenarCuadrupla($$, aux);
                             }
-                    
+
                     |   ID
                             {
                                 /*printf("expression -> id [%s]\n", $1);*/
