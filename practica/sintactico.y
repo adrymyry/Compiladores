@@ -45,7 +45,9 @@
 %left MULT DIV
 %left UMENOS
 
-%expect 2
+// Se espera un conflicto debido a gramática ambigua. Sentencias if-then-if-then-else
+// Bison realiza la elección correcta para resolver el conflicto
+%expect 1
 
 
 %%
@@ -84,7 +86,7 @@ declarations        :   declarations VAR identifier_list DOSP type PYC
                             {
                                 //printf("declarations -> declarations var identifier_list : type ;\n");
                             }
-                    |   error PYC
+                    |   declarations error PYC
                             {
                                 fprintf(stderr, "\tError sintáctico en declaración de variables.\n");
                                 errores++;
@@ -105,6 +107,14 @@ identifier_list     :   ID
                     |   identifier_list COMA ID
                             {
                                 /*printf("identifier_list -> identifier_list , id [%s]\n", $3);*/
+                                char* aux = concatena("_", $3);
+                                variables = crearVar(variables, aux, yylineno);
+                            }
+                    |   error COMA ID
+                            {
+                                fprintf(stderr, "\tError sintáctico. Falta el identificador de una variable\n");
+                                errores++;
+                                // Introduce el otro identificador en tabla de símbolos para evitar errores asociados
                                 char* aux = concatena("_", $3);
                                 variables = crearVar(variables, aux, yylineno);
                             }
@@ -172,36 +182,36 @@ statement           :   ID ASSIGN expression PYC
                                 /*printf("statement -> compound_statement\n");*/
                                 $$ = $1;
                             }
-                    |   SI boolean_expression ENTONCES statement SINO statement
+                    |   SI PARI boolean_expression PARD ENTONCES statement SINO statement
                             {
                                 /*printf("statement -> si expression entonces statement si-no statement\n");*/
                                 char * etiqueta1 = concatenaInt("$l", netiquetas);
                                 char * etiqueta2 = concatenaInt("$l", netiquetas+1);
                                 netiquetas+=2;
 
-                                concatenarCuadrupla($2, crearCuadrupla(strdup("beqz"), obtenerTemp($2), etiqueta1, NULL));
-                                liberarReg(obtenerTemp($2));
-                                concatenarCodigo($2, $4);
-                                concatenarCuadrupla($2, crearCuadrupla(strdup("b"), etiqueta2, NULL, NULL));
-                                concatenarCuadrupla($2, crearCuadrupla(etiqueta1, NULL, NULL, NULL));
-                                concatenarCodigo($2, $6);
-                                concatenarCuadrupla($2, crearCuadrupla(etiqueta2, NULL, NULL, NULL));
+                                concatenarCuadrupla($3, crearCuadrupla(strdup("beqz"), obtenerTemp($3), etiqueta1, NULL));
+                                liberarReg(obtenerTemp($3));
+                                concatenarCodigo($3, $6);
+                                concatenarCuadrupla($3, crearCuadrupla(strdup("b"), etiqueta2, NULL, NULL));
+                                concatenarCuadrupla($3, crearCuadrupla(etiqueta1, NULL, NULL, NULL));
+                                concatenarCodigo($3, $8);
+                                concatenarCuadrupla($3, crearCuadrupla(etiqueta2, NULL, NULL, NULL));
 
-                                $$ = $2;
+                                $$ = $3;
                             }
-                    |   SI boolean_expression ENTONCES statement
+                    |   SI PARI boolean_expression PARD ENTONCES statement
                             {
                                 /*printf("statement -> si expression entonces statement\n");*/
                                 char * etiqueta = concatenaInt("$l", netiquetas);
                                 netiquetas++;
 
-                                concatenarCuadrupla($2, crearCuadrupla(strdup("beqz"), obtenerTemp($2), etiqueta, NULL));
-                                liberarReg(obtenerTemp($2));
-                                concatenarCodigo($2, $4);
-                                concatenarCuadrupla($2, crearCuadrupla(etiqueta, NULL, NULL, NULL));
-                                $$ = $2;
+                                concatenarCuadrupla($3, crearCuadrupla(strdup("beqz"), obtenerTemp($3), etiqueta, NULL));
+                                liberarReg(obtenerTemp($3));
+                                concatenarCodigo($3, $6);
+                                concatenarCuadrupla($3, crearCuadrupla(etiqueta, NULL, NULL, NULL));
+                                $$ = $3;
                             }
-                    |   MIENTRAS boolean_expression HACER statement
+                    |   MIENTRAS PARI boolean_expression PARD HACER statement
                             {
                                 /*printf("statement -> mientras expression hacer statement\n");*/
                                 char * etiqueta1 = concatenaInt("$l", netiquetas);
@@ -210,16 +220,16 @@ statement           :   ID ASSIGN expression PYC
 
                                 codigo mientras = crearCodigo();
                                 concatenarCuadrupla(mientras, crearCuadrupla(etiqueta1, NULL, NULL, NULL));
-                                concatenarCodigo(mientras, $2);
-                                concatenarCuadrupla(mientras, crearCuadrupla(strdup("beqz"), obtenerTemp($2), etiqueta2, NULL));
-                                liberarReg(obtenerTemp($2));
-                                concatenarCodigo(mientras, $4);
+                                concatenarCodigo(mientras, $3);
+                                concatenarCuadrupla(mientras, crearCuadrupla(strdup("beqz"), obtenerTemp($3), etiqueta2, NULL));
+                                liberarReg(obtenerTemp($3));
+                                concatenarCodigo(mientras, $6);
                                 concatenarCuadrupla(mientras, crearCuadrupla(strdup("b"), etiqueta1, NULL, NULL));
                                 concatenarCuadrupla(mientras, crearCuadrupla(etiqueta2, NULL, NULL, NULL));
 
                                 $$ = mientras;
                             }
-                    |   HACER statement MIENTRAS boolean_expression PYC
+                    |   HACER statement MIENTRAS PARI boolean_expression PARD PYC
                             {
                                 char * etiqueta1 = concatenaInt("$l", netiquetas);
                                 netiquetas++;
@@ -227,9 +237,9 @@ statement           :   ID ASSIGN expression PYC
                                 codigo hacer = crearCodigo();
                                 concatenarCuadrupla(hacer, crearCuadrupla(etiqueta1, NULL,NULL,NULL));
                                 concatenarCodigo(hacer, $2);
-                                concatenarCodigo(hacer, $4);
-                                concatenarCuadrupla(hacer, crearCuadrupla(strdup("bnez"), obtenerTemp($4), etiqueta1, NULL));
-                                liberarReg(obtenerTemp($4));
+                                concatenarCodigo(hacer, $5);
+                                concatenarCuadrupla(hacer, crearCuadrupla(strdup("bnez"), obtenerTemp($5), etiqueta1, NULL));
+                                liberarReg(obtenerTemp($5));
 
                                 $$ = hacer;
                             }
@@ -367,7 +377,7 @@ read_list           :   ID
                                 }
                             }
                     ;
-boolean_expression  :   expression IGUAL expression
+boolean_expression  :   boolean_expression IGUAL boolean_expression
                             {
                                 // seq
                                 char * reg = obtenerReg();
@@ -378,7 +388,7 @@ boolean_expression  :   expression IGUAL expression
                                 concatenarCuadrupla($1, aux);
                                 $$ = $1;
                             }
-                    |   expression MENOR MAYOR expression //%prec DISTINTO
+                    |   boolean_expression MENOR MAYOR boolean_expression
                             {
                                 // sne
                                 char * reg = obtenerReg();
@@ -389,7 +399,7 @@ boolean_expression  :   expression IGUAL expression
                                 concatenarCuadrupla($1, aux);
                                 $$ = $1;
                             }
-                    |   expression MAYOR expression
+                    |   boolean_expression MAYOR boolean_expression
                             {
                                 // sgt
                                 char * reg = obtenerReg();
@@ -400,7 +410,7 @@ boolean_expression  :   expression IGUAL expression
                                 concatenarCuadrupla($1, aux);
                                 $$ = $1;
                             }
-                    |   expression MENOR expression
+                    |   boolean_expression MENOR boolean_expression
                             {
                                 // slt
                                 char * reg = obtenerReg();
@@ -411,7 +421,7 @@ boolean_expression  :   expression IGUAL expression
                                 concatenarCuadrupla($1, aux);
                                 $$ = $1;
                             }
-                    |   expression MAYOR IGUAL expression //%prec MAYOROIGUAL
+                    |   boolean_expression MAYOR IGUAL boolean_expression
                             {
                                 // sge
                                 char * reg = obtenerReg();
@@ -422,7 +432,7 @@ boolean_expression  :   expression IGUAL expression
                                 concatenarCuadrupla($1, aux);
                                 $$ = $1;
                             }
-                    |   expression MENOR IGUAL expression //%prec MENOROIGUAL
+                    |   boolean_expression MENOR IGUAL boolean_expression
                             {
                                 // sle
                                 char * reg = obtenerReg();
@@ -433,20 +443,16 @@ boolean_expression  :   expression IGUAL expression
                                 concatenarCuadrupla($1, aux);
                                 $$ = $1;
                             }
-                    |   NOT expression
+                    |   NOT boolean_expression
                             {
-                                cuadrupla aux = crearCuadrupla(strdup("nor"), obtenerTemp($2), obtenerTemp($2), strdup("0"));
+                                cuadrupla aux = crearCuadrupla(strdup("xori"), obtenerTemp($2), obtenerTemp($2), strdup("1"));
                                 $$ = $2;
                                 concatenarCuadrupla($$, aux);
                             }
-                    |   PARI boolean_expression PARD
-                            {
-                              $$ = $2;
-                            }
-                    /*|   expression
+                    |   expression
                             {
                                 $$ = $1;
-                            }*/
+                            }
                     ;
 
 expression          :   expression MAS expression

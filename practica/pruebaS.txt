@@ -4,13 +4,13 @@ comienzo
  a:=1;
  b:=0;
  c:=3;
- si (not a) entonces imprimir "not", "\n";
+ si (not a) entonces imprimir a, "\n";
  si (a = b) entonces imprimir "igual", "\n";
  si (a <> b) entonces imprimir "distinto", "\n";
  si (a > b) entonces imprimir "mayor", "\n";
  si (b < a) entonces imprimir "menor","\n";
  si (a >= b) entonces imprimir "mayorigual","\n";
  si (b <= a) entonces imprimir "menorigual","\n";
- si (a+b > c) entonces imprimir "complejo","\n";
+ si (not(a+b) > not(c)) entonces imprimir "complejo","\n";
  si-no imprimir "incomplejo","\n";
 fin.
