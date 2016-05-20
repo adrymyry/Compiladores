@@ -13,4 +13,5 @@ comienzo
  si (b <= a) entonces imprimir "menorigual","\n";
  si (not(a+b) > not(c)) entonces imprimir "complejo","\n";
  si-no imprimir "incomplejo","\n";
+ para (a:=0; a<10; a+1) hacer imprimir a, "\n";
 fin.

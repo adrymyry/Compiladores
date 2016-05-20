@@ -17,19 +17,19 @@ C .
 %%
 
 programa 									{ return PROGRAMA; }
-var 										{ return VAR; }
+var 											{ return VAR; }
 entero 										{ return ENTERO; }
 comienzo 									{ return COMIENZO; }
-fin 										{ return FIN; }
-si 											{ return SI; }
+fin 											{ return FIN; }
+si 												{ return SI; }
 entonces 									{ return ENTONCES; }
 si-no 										{ return SINO; }
 mientras 									{ return MIENTRAS; }
 hacer 										{ return HACER; }
 imprimir 									{ return IMPRIMIR; }
-leer 										{ return LEER; }
-para										{ return PARA;}
-not											{ return NOT; }
+leer 											{ return LEER; }
+para											{ return PARA;}
+not												{ return NOT; }
 
 ({L}|_)({L}|_|{D}){0,15}	{ yylval.cadena = strdup(yytext);
 														return ID;

@@ -265,19 +265,14 @@ statement           :   ID ASSIGN expression PYC
                                 concatenarCuadrupla(para, crearCuadrupla(etiqueta1, NULL,NULL,NULL));
                                 // Condicion;
                                 concatenarCodigo(para, $7);
-                                concatenarCuadrupla(para, crearCuadrupla(strdup("sle"), obtenerTemp($5), obtenerTemp($5), obtenerTemp($7)));
+                                concatenarCuadrupla(para, crearCuadrupla(strdup("beqz"), obtenerTemp($7), etiqueta2, NULL));
                                 liberarReg(obtenerTemp($7));
-                                concatenarCuadrupla(para, crearCuadrupla(strdup("beqz"), obtenerTemp($5), etiqueta2, NULL));
-                                liberarReg(obtenerTemp($5));
                                 // Cuerpo for
                                 concatenarCodigo(para, $12);
                                 // Actualizacion
                                 concatenarCodigo(para, $9);
-                                concatenarCuadrupla(para, crearCuadrupla(strdup("lw"), obtenerReg(), id, NULL));
-                                concatenarCuadrupla(para, crearCuadrupla(strdup("add"), obtenerTemp(para), obtenerTemp(para), obtenerTemp($9)));
-                                concatenarCuadrupla(para, crearCuadrupla(strdup("sw"), obtenerTemp(para), id, NULL));
+                                concatenarCuadrupla(para, crearCuadrupla(strdup("sw"), obtenerTemp($9), id, NULL));
                                 liberarReg(obtenerTemp($9));
-                                liberarReg(obtenerTemp(para));
                                 // Continuar
                                 concatenarCuadrupla(para, crearCuadrupla(strdup("b"), etiqueta1, NULL, NULL));
                                 concatenarCuadrupla(para, crearCuadrupla(etiqueta2, NULL, NULL, NULL));

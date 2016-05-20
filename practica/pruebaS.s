@@ -142,3 +142,23 @@ $l8:
 	li $v0, 4
 	syscall
 $l9:
+	li $t0, 0
+	sw $t0, _a
+$l10:
+	lw $t1, _a
+	li $t2, 10
+	slt $t3, $t1, $t2
+	beqz $t3, $l11
+	lw $t1, _a
+	move $a0, $t1
+	li $v0, 1
+	syscall
+	la $a0, $str1
+	li $v0, 4
+	syscall
+	lw $t1, _a
+	li $t2, 1
+	add $t4, $t1, $t2
+	sw $t4, _a
+	b $l10
+$l11:
