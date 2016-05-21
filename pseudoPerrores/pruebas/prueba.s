@@ -4,13 +4,13 @@
 
 #Cadenas del programa
 $str1:
-	.asciiz "Inicio del programa\n"
+	.asciiz "Inicio del progama\n"
 $str2:
 	.asciiz "a"
 $str3:
 	.asciiz "\n"
 $str4:
-	.asciiz "No a y b\n"
+	.asciiz "No a y no b\n"
 $str5:
 	.asciiz "c = "
 $str6:
@@ -23,8 +23,7 @@ _b:
 	.word 0
 _c:
 	.word 0
-_i:
-	.word 0
+
 ###################
 # Seccion de codigo
 	.text
@@ -48,9 +47,6 @@ main:
 	lw $t0, _a
 	beqz $t0, $l5
 	la $a0, $str2
-	li $v0, 4
-	syscall
-	la $a0, $str3
 	li $v0, 4
 	syscall
 	la $a0, $str3
@@ -94,24 +90,7 @@ $l6:
 	la $a0, $str3
 	li $v0, 4
 	syscall
-	li $t0, 1
-	sw $t0, _i
-$l7:
-	li $t1, 10
-	sle $t0, $t0, $t1
-	beqz $t0, $l8
-	lw $t3, _i
-	move $a0, $t3
-	li $v0, 1
-	syscall
-	la $a0, $str3
-	li $v0, 4
-	syscall
-	li $t2, 4
-	lw $t0, _i
-	add $t0, $t0, $t2
-	sw $t0, _i
-	b $l7
-$l8:
-	li $t0, 10
-	sw $t0, _c
+
+###################
+# Fin
+	jr $ra

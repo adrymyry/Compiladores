@@ -4,10 +4,15 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
+    #include <sys/types.h>
+    #include <sys/stat.h>
+    #include <fcntl.h>
     void yyerror(char const *msg);
     extern int yylineno;
     extern FILE *yyin;
     extern int yylex();
+    const char * ficheroSalida;
+    
     int ncadenas = 1;
     tablaVar variables;
     tablaCad cadenas;
@@ -56,22 +61,28 @@ program             :   PROGRAMA ID PARI PARD PYC declarations compound_statemen
                             {
                                 //printf("program -> programa id [%s] (); declarations compound_statement .\n", $2);
                                 if (!errores){
+                                    freopen(ficheroSalida, "w", stdout);
+                                    
                                     printf("##################\n");
                                     printf("# Seccion de datos\n");
                                     printf("\t.data\n\n");
                                     imprimirTablaCad(cadenas);
                                     imprimirTablaVar(variables);
 
-                                    printf("###################\n");
+                                    printf("\n###################\n");
                                     printf("# Seccion de codigo\n");
                                     printf("\t.text\n\n");
                                     printf("\t.globl main\n");
                                     printf("main:\n");
                                     printf("\t# Aqui comienzan las instrucciones del programa\n");
                                     imprimirCodigo($7);
+                                    printf("\n###################\n");
+                                    printf("# Fin\n");
+                                    printf("\tjr $ra");
                                     // Liberar codigo
                                     free($2);
                                     liberarCodigo($7);
+                                    fclose(stdout);
                                 }
 
 
@@ -85,6 +96,11 @@ program             :   PROGRAMA ID PARI PARD PYC declarations compound_statemen
 declarations        :   declarations VAR identifier_list DOSP type PYC
                             {
                                 //printf("declarations -> declarations var identifier_list : type ;\n");
+                            }
+                    |   declarations VAR error DOSP type PYC
+                            {
+                                fprintf(stderr, "\tError sintáctico en lista de variables.\n");
+                                errores++;
                             }
                     |   declarations error PYC
                             {
@@ -131,7 +147,7 @@ compound_statement  :   COMIENZO optional_statements FIN
                                 /*printf("compound_statement -> comienzo optional_statements fin\n");*/
                                 $$ = $2;
                             }
-                    |   error FIN
+                    |   COMIENZO error FIN
                             {
                                 fprintf(stderr, "\tError sintáctico en bloque de sentencias \n");
                                 errores++;
@@ -229,7 +245,7 @@ statement           :   ID ASSIGN expression PYC
 
                                 $$ = mientras;
                             }
-                    |   HACER statement MIENTRAS PARI boolean_expression PARD PYC
+                    |   HACER statement MIENTRAS PARI boolean_expression PARD
                             {
                                 char * etiqueta1 = concatenaInt("$l", netiquetas);
                                 netiquetas++;
@@ -536,14 +552,14 @@ expression          :   expression MAS expression
 
 /* Tratamiento de errores */
 void yyerror(char const *msg) {
-    fprintf(stderr, "Error sintáctico (linea %d): %s\n", yylineno, msg);
+    fprintf(stderr, "Error sintáctico (línea %d): %s\n", yylineno, msg);
     errores++;
 }
 
 int main(int argc, char const *argv[]) {
 
-    if (argc != 2) {
-        printf("Uso: %s fichero\n", argv[0]);
+    if (argc < 2 || argc > 4) {
+        printf("Uso: %s <fichero> [-o <nombre fichero de salida>]\n", argv[0]);
         exit(1);
     }
 
@@ -555,6 +571,10 @@ int main(int argc, char const *argv[]) {
 
     yydebug=0; //Para que no salga el debug
     yyin = f_in;
+    
+    if (argc==2) ficheroSalida = "codigo.s";
+    else ficheroSalida = argv[3];
+    
     yyparse();
 
     fclose(f_in);

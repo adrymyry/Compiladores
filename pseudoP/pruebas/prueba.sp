@@ -1,5 +1,5 @@
 programa prueba ();
-var a,b,c,i: entero;
+var a,b,c: entero;
 comienzo
     imprimir "Inicio del programa\n";
     a := 0; b := 0; c := 5+2-2;
@@ -10,10 +10,5 @@ comienzo
                 imprimir "c = ",c,"\n";
                 c := c-2+1
             fin;
-    imprimir "Final","\n";
-    para (i:=1; 10; 4) hacer
-        comienzo
-            imprimir i, "\n"
-        fin;
-    c := 10
+    imprimir "Final","\n"
 fin.
